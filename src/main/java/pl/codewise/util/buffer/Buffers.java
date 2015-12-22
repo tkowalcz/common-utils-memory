@@ -1,5 +1,6 @@
 package pl.codewise.util.buffer;
 
+import java.nio.BufferOverflowException;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -157,6 +158,19 @@ public class Buffers {
             remaining += buf.remaining();
         }
         return remaining;
+    }
+
+    public static void skip(ReadOnlyByteBuffer buffer, int skipLength) {
+        buffer.position(buffer.position() + skipLength);
+    }
+
+    public static char readChar(ReadOnlyByteBuffer buffer) {
+        int ch1 = buffer.get();
+        int ch2 = buffer.get();
+        if ((ch1 | ch2) < 0) {
+            throw new BufferOverflowException();
+        }
+        return (char) ((ch1 << 8) + (ch2));
     }
 
     @FunctionalInterface
