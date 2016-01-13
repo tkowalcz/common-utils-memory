@@ -128,10 +128,10 @@ public class Buffers {
     }
 
     public static byte[] toArray(ReadOnlyByteBuffer<?> buffer) {
-        byte[] result = new byte[buffer.capacity()];
-        if (result.length > 0) {
-            int pos = buffer.position();
-            int limit = buffer.limit();
+        byte[] result = new byte[Math.toIntExact(buffer.capacity())];
+        if (result.length > 0L) {
+            long pos = buffer.position();
+            long limit = buffer.limit();
             buffer.clear().get(result).position(pos).limit(limit);
         }
         return result;

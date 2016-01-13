@@ -8,14 +8,14 @@ import java.nio.BufferUnderflowException;
 @SuppressWarnings("unchecked")
 abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBufferBase<B> {
 
-    static final int LIMIT_AT_CAPACITY = -1;
+    static final long LIMIT_AT_CAPACITY = -1L;
 
     protected boolean initialized = false;
 
     protected MutableMemory memory;
-    protected int baseOffset;
-    protected int position;
-    protected int limit = LIMIT_AT_CAPACITY;
+    protected long baseOffset;
+    protected long position;
+    protected long limit = LIMIT_AT_CAPACITY;
 
     protected AbstractByteBuffer() {
     }
@@ -31,25 +31,25 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
         this.initialized = true;
     }
 
-    protected B withBaseOffset(int baseOffset) {
+    protected B withBaseOffset(long baseOffset) {
         this.baseOffset = baseOffset;
         return (B) this;
     }
 
     @Override
-    public int capacity() {
+    public long capacity() {
         assert initialized : "Buffer not initialized";
         return memory.capacity() - baseOffset;
     }
 
     @Override
-    public int position() {
+    public long position() {
         assert initialized : "Buffer not initialized";
         return position;
     }
 
     @Override
-    public B position(int newPosition) {
+    public B position(long newPosition) {
         assert initialized : "Buffer not initialized";
         if (newPosition < 0 || newPosition > limit()) {
             throw new IllegalArgumentException();
@@ -59,7 +59,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     }
 
     @Override
-    public int limit() {
+    public long limit() {
         assert initialized : "Buffer not initialized";
         return limit == LIMIT_AT_CAPACITY ? capacity() : limit;
     }
@@ -70,12 +70,12 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     }
 
     @Override
-    public B limit(int newLimit) {
+    public B limit(long newLimit) {
         assert initialized : "Buffer not initialized";
         if (newLimit < 0) {
             throw new IllegalArgumentException();
         } else {
-            int capacity = capacity();
+            long capacity = capacity();
             if (newLimit < capacity) {
                 limit = newLimit;
             } else if (newLimit == capacity) {
@@ -91,7 +91,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     }
 
     @Override
-    public B resetAtPosition(int position) {
+    public B resetAtPosition(long position) {
         limit = LIMIT_AT_CAPACITY;
         this.position = position;
 
@@ -99,7 +99,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     }
 
     @Override
-    public int remaining() {
+    public long remaining() {
         assert initialized : "Buffer not initialized";
         return limit() - position;
     }
@@ -128,7 +128,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     public B sliceMe() {
         assert initialized;
 
-        int oldPosition = position;
+        long oldPosition = position;
         this.baseOffset += oldPosition;
         this.position = 0;
 
@@ -174,10 +174,10 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
         assert o instanceof AbstractByteBuffer;
         AbstractByteBuffer<?> that = (AbstractByteBuffer<?>) o;
 
-        int commonLength = Math.min(this.remaining(), that.remaining());
+        long commonLength = Math.min(this.remaining(), that.remaining());
         int result = this.memory.compare(getOffset(), that.memory, that.getOffset(), commonLength);
         if (result == 0) {
-            return this.remaining() - that.remaining();
+            return Long.compare(this.remaining(), that.remaining());
         } else {
             return result;
         }
@@ -207,17 +207,17 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
         }
     }
 
-    int getOffset() {
+    long getOffset() {
         assert initialized : "Buffer not initialized";
         return baseOffset + position;
     }
 
-    int getOffset(int index) {
+    long getOffset(long index) {
         assert initialized : "Buffer not initialized";
         return baseOffset + index;
     }
 
-    void getRangeCheck(int index, int size) {
+    void getRangeCheck(long index, long size) {
         assert initialized : "Buffer not initialized";
         assert index >= 0 && size >= 0 : "Index and size must be greater than or equal to zero";
         if (index + size > limit()) {
@@ -225,7 +225,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
         }
     }
 
-    void putRangeCheck(int index, int size) {
+    void putRangeCheck(long index, long size) {
         assert initialized : "Buffer not initialized";
         assert index >= 0 && size >= 0 : "Index and size must be greater than or equal to zero";
         // check only if limit is not set at memory capacity

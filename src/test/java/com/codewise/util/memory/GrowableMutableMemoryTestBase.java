@@ -44,7 +44,7 @@ public abstract class GrowableMutableMemoryTestBase<M extends AbstractMutableMem
     @Test(expectedExceptions = BufferUnderflowException.class, enabled = MemoryAccess.RANGE_CHECKS)
     public void shouldUnderflowWhenGetByteArrayFromOutsideOfBuffer() {
         // given
-        byte[] buf = new byte[memory.capacity() + 1];
+        byte[] buf = new byte[(int) memory.capacity() + 1];
 
         // when
         memory.get(Long.BYTES, buf, 0, buf.length);
@@ -54,7 +54,7 @@ public abstract class GrowableMutableMemoryTestBase<M extends AbstractMutableMem
     public void shouldNotUnderflowWhenGetByteArray() {
         // given
         setUpMemory();
-        byte[] buf = new byte[memory.capacity() + 1];
+        byte[] buf = new byte[(int) memory.capacity() + 1];
 
         // when
         memory.get(0, buf, 0, buf.length);

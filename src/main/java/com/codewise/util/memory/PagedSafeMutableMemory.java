@@ -2,6 +2,8 @@ package com.codewise.util.memory;
 
 import com.codewise.util.lowlevel.MemoryAccess;
 
+import static java.lang.Math.toIntExact;
+
 public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
 
     protected PagedSafeMutableMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
@@ -16,34 +18,34 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    protected byte[] getMemoryPageAsByteArray(int offset) {
-        return memory[offset >>> pageSizeBits];
+    protected byte[] getMemoryPageAsByteArray(long offset) {
+        return memory[toIntExact(offset >>> pageSizeBits)];
     }
 
     @Override
-    public byte get(int index) {
+    public byte get(long index) {
         checkCapacity(index + Byte.BYTES);
-        byte[] page = memory[index >>> pageSizeBits];
-        return page[(index & pageAddrMask)];
+        byte[] page = memory[toIntExact(index >>> pageSizeBits)];
+        return page[(int) (index & pageAddrMask)];
     }
 
     @Override
-    public void put(int index, byte b) {
+    public void put(long index, byte b) {
         ensureCapacity(index + Byte.BYTES);
-        byte[] page = memory[index >>> pageSizeBits];
-        page[(index & pageAddrMask)] = b;
+        byte[] page = memory[toIntExact(index >>> pageSizeBits)];
+        page[(int) (index & pageAddrMask)] = b;
     }
 
     @Override
-    public char getChar(int index) {
+    public char getChar(long index) {
         checkCapacity(index + Character.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr < pageAddrMask) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             return MemoryAccess.getCharSafe(page, pageAddr);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page0 = memory[pageIndex];
             byte[] page1 = memory[pageIndex + 1];
             byte b0 = page1[0];
@@ -53,15 +55,15 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    public void putChar(int index, char value) {
+    public void putChar(long index, char value) {
         ensureCapacity(index + Character.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr < pageAddrMask) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             MemoryAccess.setCharSafe(page, pageAddr, value);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page0 = memory[pageIndex];
             byte[] page1 = memory[pageIndex + 1];
             byte b1 = (byte) (value >> 8);
@@ -72,15 +74,15 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    public short getShort(int index) {
+    public short getShort(long index) {
         checkCapacity(index + Short.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr < pageAddrMask) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             return MemoryAccess.getShortSafe(page, pageAddr);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page0 = memory[pageIndex];
             byte[] page1 = memory[pageIndex + 1];
             byte b0 = page1[0];
@@ -90,15 +92,15 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    public void putShort(int index, short value) {
+    public void putShort(long index, short value) {
         ensureCapacity(index + Short.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr < pageAddrMask) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             MemoryAccess.setShortSafe(page, pageAddr, value);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page0 = memory[pageIndex];
             byte[] page1 = memory[pageIndex + 1];
             byte b1 = (byte) (value >> 8);
@@ -109,15 +111,15 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    public int getInt(int index) {
+    public int getInt(long index) {
         checkCapacity(index + Integer.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr <= pageAddrMask - 3) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             return MemoryAccess.getIntSafe(page, pageAddr);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page = memory[pageIndex++];
 
             byte b3 = page[pageAddr++];
@@ -145,15 +147,15 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    public void putInt(int index, int value) {
+    public void putInt(long index, int value) {
         ensureCapacity(index + Integer.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr <= pageAddrMask - 3) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             MemoryAccess.setIntSafe(page, pageAddr, value);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page = memory[pageIndex++];
 
             page[pageAddr++] = (byte) (value >>> 24);
@@ -176,15 +178,15 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    public long getLong(int index) {
+    public long getLong(long index) {
         checkCapacity(index + Long.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr <= pageAddrMask - 7) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             return MemoryAccess.getLongSafe(page, pageAddr);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page = memory[pageIndex++];
 
             byte b7 = page[pageAddr++];
@@ -236,15 +238,15 @@ public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
     }
 
     @Override
-    public void putLong(int index, long value) {
+    public void putLong(long index, long value) {
         ensureCapacity(index + Long.BYTES);
-        int pageAddrMask = this.pageAddrMask;
-        int pageAddr = index & pageAddrMask;
+        long pageAddrMask = this.pageAddrMask;
+        int pageAddr = (int) (index & pageAddrMask);
         if (pageAddr <= pageAddrMask - 7) {
-            byte[] page = memory[index >>> pageSizeBits];
+            byte[] page = memory[toIntExact(index >>> pageSizeBits)];
             MemoryAccess.setLongSafe(page, pageAddr, value);
         } else {
-            int pageIndex = index >>> pageSizeBits;
+            int pageIndex = toIntExact(index >>> pageSizeBits);
             byte[] page = memory[pageIndex++];
 
             page[pageAddr++] = (byte) (value >>> 56);

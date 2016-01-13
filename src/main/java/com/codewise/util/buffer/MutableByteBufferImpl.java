@@ -28,7 +28,7 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     }
 
     @Override
-    public MutableByteBuffer put(int index, byte b) {
+    public MutableByteBuffer put(long index, byte b) {
         putRangeCheck(index, Byte.BYTES);
         memory.put(getOffset(index), b);
         return this;
@@ -45,7 +45,7 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     @Override
     public MutableByteBuffer put(ReadOnlyByteBuffer src) {
         assert src instanceof AbstractByteBuffer;
-        int bytesToCopy = src.remaining();
+        long bytesToCopy = src.remaining();
         putRangeCheck(position, bytesToCopy);
         AbstractByteBuffer source = (AbstractByteBuffer) src;
         memory.put(getOffset(), source.memory, source.getOffset(), bytesToCopy);
@@ -63,7 +63,7 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     }
 
     @Override
-    public MutableByteBuffer putChar(int index, char value) {
+    public MutableByteBuffer putChar(long index, char value) {
         putRangeCheck(index, Character.BYTES);
         memory.putChar(getOffset(index), value);
         return this;
@@ -78,7 +78,7 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     }
 
     @Override
-    public MutableByteBuffer putShort(int index, short value) {
+    public MutableByteBuffer putShort(long index, short value) {
         putRangeCheck(index, Short.BYTES);
         memory.putShort(getOffset(index), value);
         return this;
@@ -93,7 +93,7 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     }
 
     @Override
-    public MutableByteBuffer putInt(int index, int value) {
+    public MutableByteBuffer putInt(long index, int value) {
         putRangeCheck(index, Integer.BYTES);
         memory.putInt(getOffset(index), value);
         return this;
@@ -108,7 +108,7 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     }
 
     @Override
-    public MutableByteBuffer putLong(int index, long value) {
+    public MutableByteBuffer putLong(long index, long value) {
         putRangeCheck(index, Long.BYTES);
         memory.putLong(getOffset(index), value);
         return this;
@@ -123,7 +123,7 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     }
 
     @Override
-    public MutableByteBuffer putDouble(int index, double value) {
+    public MutableByteBuffer putDouble(long index, double value) {
         putRangeCheck(index, Double.BYTES);
         memory.putDouble(getOffset(index), value);
         return this;

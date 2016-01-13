@@ -32,7 +32,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public byte get(int index) {
+    public byte get(long index) {
         getRangeCheck(index, Byte.BYTES);
         return memory.get(getOffset(index));
     }
@@ -63,7 +63,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public char getChar(int index) {
+    public char getChar(long index) {
         getRangeCheck(index, Character.BYTES);
         return memory.getChar(getOffset(index));
     }
@@ -77,7 +77,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public short getShort(int index) {
+    public short getShort(long index) {
         getRangeCheck(index, Short.BYTES);
         return memory.getShort(getOffset(index));
     }
@@ -91,7 +91,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public int getInt(int index) {
+    public int getInt(long index) {
         getRangeCheck(index, Integer.BYTES);
         return memory.getInt(getOffset(index));
     }
@@ -105,7 +105,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public long getLong(int index) {
+    public long getLong(long index) {
         getRangeCheck(index, Long.BYTES);
         return memory.getLong(getOffset(index));
     }
@@ -119,21 +119,21 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public double getDouble(int index) {
+    public double getDouble(long index) {
         getRangeCheck(index, Double.BYTES);
         return memory.getDouble(getOffset(index));
     }
 
-    public void get(int index, byte[] dst, int offset, int length) {
+    public void get(long index, byte[] dst, int offset, int length) {
         memory.get(index, dst, offset, length);
     }
 
     @Override
-    public void get(int index, ByteBuffer buf) {
+    public void get(long index, ByteBuffer buf) {
         memory.get(index, buf);
     }
 
-    public int compare(int index, ReadOnlyMemory that, int offset, int length) {
+    public int compare(long index, ReadOnlyMemory that, long offset, long length) {
         if (that instanceof AbstractByteBuffer) {
             that = ((AbstractByteBuffer) that).memory;
         }
@@ -147,7 +147,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer, int index, int length) {
+    public void iterateOverMemory(MemoryConsumer consumer, long index, long length) {
         if (index + length > capacity()) {
             throw new IllegalArgumentException();
         }
@@ -157,7 +157,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
 
     @Override
     public void iterateOverMemory(MemoryConsumer consumer) {
-        int position = position();
+        long position = position();
         iterateOverMemory(consumer, position, remaining());
     }
 
@@ -165,8 +165,8 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     public int hashCode() {
         int h = 1;
         if (initialized) {
-            int p = position();
-            for (int i = limit() - 1; i >= p; i--) {
+            long p = position();
+            for (long i = limit() - 1; i >= p; i--) {
                 h = 31 * h + (int) get(i);
             }
         }
@@ -183,97 +183,97 @@ class ReadOnlyMemoryAdapter implements MutableMemory {
     }
 
     @Override
-    public void put(int index, byte b) {
+    public void put(long index, byte b) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public void putChar(int index, char value) {
+    public void putChar(long index, char value) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public void putShort(int index, short value) {
+    public void putShort(long index, short value) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public void putInt(int index, int value) {
+    public void putInt(long index, int value) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public void putLong(int index, long value) {
+    public void putLong(long index, long value) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public void putDouble(int index, double value) {
+    public void putDouble(long index, double value) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public void put(int index, byte[] src, int offset, int length) {
+    public void put(long index, byte[] src, int offset, int length) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public void put(int index, MutableMemory src, int offset, int length) {
+    public void put(long index, MutableMemory src, long offset, long length) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
     @Override
-    public int capacity() {
+    public long capacity() {
         return delegate.capacity();
     }
 
     @Override
-    public byte get(int index) {
+    public byte get(long index) {
         return delegate.get(index);
     }
 
     @Override
-    public char getChar(int index) {
+    public char getChar(long index) {
         return delegate.getChar(index);
     }
 
     @Override
-    public short getShort(int index) {
+    public short getShort(long index) {
         return delegate.getShort(index);
     }
 
     @Override
-    public int getInt(int index) {
+    public int getInt(long index) {
         return delegate.getInt(index);
     }
 
     @Override
-    public long getLong(int index) {
+    public long getLong(long index) {
         return delegate.getLong(index);
     }
 
     @Override
-    public double getDouble(int index) {
+    public double getDouble(long index) {
         return delegate.getDouble(index);
     }
 
     @Override
-    public void get(int index, byte[] dst, int offset, int length) {
+    public void get(long index, byte[] dst, int offset, int length) {
         delegate.get(index, dst, offset, length);
     }
 
     @Override
-    public void get(int index, ByteBuffer buf) {
+    public void get(long index, ByteBuffer buf) {
         delegate.get(index, buf);
     }
 
     @Override
-    public int compare(int index, ReadOnlyMemory that, int offset, int length) {
+    public int compare(long index, ReadOnlyMemory that, long offset, long length) {
         return delegate.compare(index, that, offset, length);
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer, int offset, int length) {
+    public void iterateOverMemory(MemoryConsumer consumer, long offset, long length) {
         delegate.iterateOverMemory(consumer, offset, length);
     }
 }

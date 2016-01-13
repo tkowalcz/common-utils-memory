@@ -18,24 +18,24 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
     @DataProvider(name = PUT_METHODS_WITHOUT_INDEX)
     public Object[][] putMethodsWithoutIndex() {
         return new Object[][]{
-                {methodForCall((MutableByteBuffer b) -> b.put((byte) 0)), methodForCall((MutableMemory m) -> m.put(0, (byte) 0)), Byte.BYTES, (byte) 1},
-                {methodForCall((MutableByteBuffer b) -> b.putChar('a')), methodForCall((MutableMemory m) -> m.putChar(0, 'a')), Character.BYTES, 'a'},
-                {methodForCall((MutableByteBuffer b) -> b.putShort((short) 0)), methodForCall((MutableMemory m) -> m.putShort(0, (short) 0)), Short.BYTES, (short) 2},
-                {methodForCall((MutableByteBuffer b) -> b.putInt(0)), methodForCall((MutableMemory m) -> m.putInt(0, 0)), Integer.BYTES, 3},
-                {methodForCall((MutableByteBuffer b) -> b.putLong(0l)), methodForCall((MutableMemory m) -> m.putLong(0, 0l)), Long.BYTES, 4l},
-                {methodForCall((MutableByteBuffer b) -> b.putDouble(0.0d)), methodForCall((MutableMemory m) -> m.putDouble(0, 0.0d)), Double.BYTES, 123.32d}
+                {methodForCall((MutableByteBuffer b) -> b.put((byte) 0)), methodForCall((MutableMemory m) -> m.put(0L, (byte) 0)), Byte.BYTES, (byte) 1},
+                {methodForCall((MutableByteBuffer b) -> b.putChar('a')), methodForCall((MutableMemory m) -> m.putChar(0L, 'a')), Character.BYTES, 'a'},
+                {methodForCall((MutableByteBuffer b) -> b.putShort((short) 0)), methodForCall((MutableMemory m) -> m.putShort(0L, (short) 0)), Short.BYTES, (short) 2},
+                {methodForCall((MutableByteBuffer b) -> b.putInt(0)), methodForCall((MutableMemory m) -> m.putInt(0L, 0)), Integer.BYTES, 3},
+                {methodForCall((MutableByteBuffer b) -> b.putLong(0l)), methodForCall((MutableMemory m) -> m.putLong(0L, 0L)), Long.BYTES, 4L},
+                {methodForCall((MutableByteBuffer b) -> b.putDouble(0.0d)), methodForCall((MutableMemory m) -> m.putDouble(0L, 0.0d)), Double.BYTES, 123.32d}
         };
     }
 
     @DataProvider(name = PUT_METHODS_WITH_INDEX)
     public Object[][] putMehodsWithIndex() {
         return new Object[][]{
-                {methodForCall((MutableByteBuffer b) -> b.put(0, (byte) 0)), methodForCall((MutableMemory m) -> m.put(0, (byte) 0)), Byte.BYTES, (byte) 1},
-                {methodForCall((MutableByteBuffer b) -> b.putChar(0, 'a')), methodForCall((MutableMemory m) -> m.putChar(0, 'a')), Character.BYTES, 'a'},
-                {methodForCall((MutableByteBuffer b) -> b.putShort(0, (short) 0)), methodForCall((MutableMemory m) -> m.putShort(0, (short) 0)), Short.BYTES, (short) 2},
-                {methodForCall((MutableByteBuffer b) -> b.putInt(0, 0)), methodForCall((MutableMemory m) -> m.putInt(0, 0)), Integer.BYTES, 3},
-                {methodForCall((MutableByteBuffer b) -> b.putLong(0, 0l)), methodForCall((MutableMemory m) -> m.putLong(0, 0l)), Long.BYTES, 4l},
-                {methodForCall((MutableByteBuffer b) -> b.putDouble(0, 0.0d)), methodForCall((MutableMemory m) -> m.putDouble(0, 0.0d)), Double.BYTES, 123.32d}
+                {methodForCall((MutableByteBuffer b) -> b.put(0L, (byte) 0)), methodForCall((MutableMemory m) -> m.put(0L, (byte) 0)), Byte.BYTES, (byte) 1},
+                {methodForCall((MutableByteBuffer b) -> b.putChar(0L, 'a')), methodForCall((MutableMemory m) -> m.putChar(0L, 'a')), Character.BYTES, 'a'},
+                {methodForCall((MutableByteBuffer b) -> b.putShort(0L, (short) 0)), methodForCall((MutableMemory m) -> m.putShort(0L, (short) 0)), Short.BYTES, (short) 2},
+                {methodForCall((MutableByteBuffer b) -> b.putInt(0L, 0)), methodForCall((MutableMemory m) -> m.putInt(0L, 0)), Integer.BYTES, 3},
+                {methodForCall((MutableByteBuffer b) -> b.putLong(0L, 0L)), methodForCall((MutableMemory m) -> m.putLong(0L, 0L)), Long.BYTES, 4L},
+                {methodForCall((MutableByteBuffer b) -> b.putDouble(0L, 0.0d)), methodForCall((MutableMemory m) -> m.putDouble(0L, 0.0d)), Double.BYTES, 123.32d}
         };
     }
 
@@ -133,7 +133,7 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
         buffer.put(buf);
 
         // then
-        verify(memoryMockWithCapacityOf50).put(1, buf, 0, buf.length);
+        verify(memoryMockWithCapacityOf50).put(1L, buf, 0, buf.length);
     }
 
     @Test
@@ -146,7 +146,7 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
         buffer.put(buf, 2, 8);
 
         // then
-        verify(memoryMockWithCapacityOf50).put(1, buf, 2, 8);
+        verify(memoryMockWithCapacityOf50).put(1L, buf, 2, 8);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
         buffer.put(buf);
 
         // then
-        verify(memoryMockWithCapacityOf50).put(11, buf, 0, buf.length);
+        verify(memoryMockWithCapacityOf50).put(11L, buf, 0, buf.length);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
         buffer.put(buf, 2, 8);
 
         // then
-        verify(memoryMockWithCapacityOf50).put(11, buf, 2, 8);
+        verify(memoryMockWithCapacityOf50).put(11L, buf, 2, 8);
     }
 
     @Test
@@ -236,7 +236,7 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
         buffer.put(srcBuffer);
 
         // then
-        verify(memoryMockWithCapacityOf50).put(2, memoryMockWithCapacityOf10, 1, 8);
+        verify(memoryMockWithCapacityOf50).put(2L, memoryMockWithCapacityOf10, 1L, 8L);
     }
 
     @Test
@@ -249,7 +249,7 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
         buffer.put(srcBuffer);
 
         // then
-        verify(memoryMockWithCapacityOf50).put(12, memoryMockWithCapacityOf10, 0, 10);
+        verify(memoryMockWithCapacityOf50).put(12L, memoryMockWithCapacityOf10, 0L, 10L);
     }
 
     @Test
@@ -285,10 +285,10 @@ public class MutableByteBufferImplTest extends ReadOnlyByteBufferTestBase<Mutabl
         buffer = spy(buffer);
 
         // when
-        Object result = putMethod.call(buffer, 1, valueExample);
+        Object result = putMethod.call(buffer, 1L, valueExample);
 
         // then
-        verify(buffer).putRangeCheck(1, typeSize);
+        verify(buffer).putRangeCheck(1L, typeSize);
     }
 
     @Test(dataProvider = PUT_METHODS_WITH_INDEX)

@@ -56,24 +56,24 @@ public abstract class MutableMemoryTestBase<M extends AbstractMutableMemory> {
     @DataProvider(name = PUT_METHODS)
     public Object[][] putMethods() {
         return new Object[][]{
-                {methodForCall((MutableMemory m) -> m.put(0, (byte) 0)), TEST_BYTES[0], Byte.BYTES},
-                {methodForCall((MutableMemory m) -> m.putChar(0, 'a')), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getChar(0), Character.BYTES},
-                {methodForCall((MutableMemory m) -> m.putShort(0, (short) 0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getShort(0), Short.BYTES},
-                {methodForCall((MutableMemory m) -> m.putInt(0, 0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getInt(0), Integer.BYTES},
-                {methodForCall((MutableMemory m) -> m.putLong(0, 0l)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getLong(0), Long.BYTES},
-                {methodForCall((MutableMemory m) -> m.putDouble(0, 0.0d)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getDouble(0), Double.BYTES},
+                {methodForCall((MutableMemory m) -> m.put(0L, (byte) 0)), TEST_BYTES[0], Byte.BYTES},
+                {methodForCall((MutableMemory m) -> m.putChar(0L, 'a')), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getChar(0), Character.BYTES},
+                {methodForCall((MutableMemory m) -> m.putShort(0L, (short) 0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getShort(0), Short.BYTES},
+                {methodForCall((MutableMemory m) -> m.putInt(0L, 0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getInt(0), Integer.BYTES},
+                {methodForCall((MutableMemory m) -> m.putLong(0L, 0l)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getLong(0), Long.BYTES},
+                {methodForCall((MutableMemory m) -> m.putDouble(0L, 0.0d)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getDouble(0), Double.BYTES},
         };
     }
 
     @DataProvider(name = GET_METHODS)
     public Object[][] getMethods() {
         return new Object[][]{
-                {methodForCall((MutableMemory m) -> m.get(0)), TEST_BYTES[0], Byte.BYTES},
-                {methodForCall((MutableMemory m) -> m.getChar(0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getChar(0), Character.BYTES},
-                {methodForCall((MutableMemory m) -> m.getShort(0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getShort(0), Short.BYTES},
-                {methodForCall((MutableMemory m) -> m.getInt(0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getInt(0), Integer.BYTES},
-                {methodForCall((MutableMemory m) -> m.getLong(0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getLong(0), Long.BYTES},
-                {methodForCall((MutableMemory m) -> m.getDouble(0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getDouble(0), Double.BYTES},
+                {methodForCall((MutableMemory m) -> m.get(0L)), TEST_BYTES[0], Byte.BYTES},
+                {methodForCall((MutableMemory m) -> m.getChar(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getChar(0), Character.BYTES},
+                {methodForCall((MutableMemory m) -> m.getShort(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getShort(0), Short.BYTES},
+                {methodForCall((MutableMemory m) -> m.getInt(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getInt(0), Integer.BYTES},
+                {methodForCall((MutableMemory m) -> m.getLong(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getLong(0), Long.BYTES},
+                {methodForCall((MutableMemory m) -> m.getDouble(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getDouble(0), Double.BYTES},
         };
     }
 
@@ -88,7 +88,7 @@ public abstract class MutableMemoryTestBase<M extends AbstractMutableMemory> {
         // then
         assertThatMemory(memory).startsWith(Arrays.copyOfRange(TEST_BYTES, 0, typeSize));
         if (memory.capacity() > typeSize) {
-            assertThatMemory(memory).endsWith(zeros(memory.capacity() - typeSize));
+            assertThatMemory(memory).endsWith(zeros((int) (memory.capacity() - typeSize)));
         }
     }
 
@@ -115,7 +115,7 @@ public abstract class MutableMemoryTestBase<M extends AbstractMutableMemory> {
         // then
         assertThatMemory(memory)
                 .startsWith(Arrays.copyOfRange(TEST_BYTES, 0, 6))
-                .endsWith(zeros(memory.capacity() - 6));
+                .endsWith(zeros((int) (memory.capacity() - 6)));
     }
 
     @Test
@@ -156,7 +156,7 @@ public abstract class MutableMemoryTestBase<M extends AbstractMutableMemory> {
 
 
     protected AbstractByteArrayAssert<?> assertThatMemory(M memory) {
-        int capacity = memory.capacity();
+        int capacity = Math.toIntExact(memory.capacity());
         byte[] currentBytes = new byte[capacity];
         for (int idx = 0; idx < capacity; idx++) {
             currentBytes[idx] = getByteDirect(idx);

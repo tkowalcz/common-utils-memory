@@ -8,7 +8,7 @@ public abstract class AbstractPagedMutableMemory extends AbstractMutableMemory {
     protected final int pageCntGrowMask;
     protected final int pageSizeBits;
     protected final int pageSize;
-    protected final int pageAddrMask;
+    protected final long pageAddrMask;
 
     protected final long maxPageOffset;
     protected final long lastPageOffset;
@@ -31,7 +31,7 @@ public abstract class AbstractPagedMutableMemory extends AbstractMutableMemory {
         lastPageOffset = maxPageOffset - 1;
 
         capacity = initialCapacity > 0 ? ((initialCapacity - 1) | pageAddrMask) + 1 : 0;
-        pageCount = this.capacity >>> pageSizeBits;
+        pageCount = Math.toIntExact(this.capacity >>> pageSizeBits);
         pageCapacity = ((pageCount - 1) | pageCntGrowMask) + 1;
         byte[][] pages = new byte[pageCapacity][];
         for (int idx = 0; idx < pageCount; idx++) {
@@ -50,20 +50,20 @@ public abstract class AbstractPagedMutableMemory extends AbstractMutableMemory {
     }
 
     @Override
-    protected int getPageOffset(int index) {
-        return index & pageAddrMask;
+    protected int getPageOffset(long index) {
+        return (int) (index & pageAddrMask);
     }
 
     @Override
-    protected int getPageLength(int index) {
+    protected int getPageLength(long index) {
         return pageSize;
     }
 
     @Override
-    protected void ensureCapacity(int requiredCapacity) {
+    protected void ensureCapacity(long requiredCapacity) {
         if (requiredCapacity > capacity) {
-            requiredCapacity = ((requiredCapacity - 1) | pageAddrMask) + 1;
-            int requiredPageCount = requiredCapacity >>> pageSizeBits;
+            requiredCapacity = ((requiredCapacity - 1L) | pageAddrMask) + 1L;
+            int requiredPageCount = Math.toIntExact(requiredCapacity >>> pageSizeBits);
             int requiredPageCapacity = ((requiredPageCount - 1) | pageCntGrowMask) + 1;
             if (requiredPageCapacity > pageCapacity) {
                 byte[][] newPages = new byte[requiredPageCapacity][];

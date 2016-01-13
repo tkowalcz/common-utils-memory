@@ -25,7 +25,7 @@ public class BufferBackedInputStream extends InputStream {
     @Override
     public int read(byte[] b) throws IOException {
         if (buffer.hasRemaining()) {
-            int bytesToGet = Math.min(buffer.remaining(), b.length);
+            int bytesToGet = Math.toIntExact(Math.min(buffer.remaining(), b.length));
             buffer.get(b, 0, bytesToGet);
             return bytesToGet;
         } else {
@@ -36,7 +36,7 @@ public class BufferBackedInputStream extends InputStream {
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (buffer.hasRemaining()) {
-            int bytesToGet = Math.min(buffer.remaining(), len);
+            int bytesToGet = Math.toIntExact(Math.min(buffer.remaining(), len));
             buffer.get(b, off, bytesToGet);
             return bytesToGet;
         } else {
@@ -47,7 +47,7 @@ public class BufferBackedInputStream extends InputStream {
     @Override
     public long skip(long n) throws IOException {
         if (n > 0 && buffer.hasRemaining()) {
-            int bytesToSkip = Math.min(buffer.remaining(), (int) n);
+            long bytesToSkip = Math.min(buffer.remaining(), n);
             buffer.position(buffer.position() + bytesToSkip);
             return bytesToSkip;
         } else {
@@ -57,6 +57,6 @@ public class BufferBackedInputStream extends InputStream {
 
     @Override
     public int available() throws IOException {
-        return buffer.remaining();
+        return Math.toIntExact(buffer.remaining());
     }
 }

@@ -13,11 +13,11 @@ public class GrowableUnsafeMutableMemory extends FixedUnsafeMutableMemory {
     }
 
     @Override
-    protected void ensureCapacity(int size) {
+    protected void ensureCapacity(long size) {
         if (size > capacity) {
-            int newCapacity = ((size - 1) | (CAPACITY_INCREMENT_GRANULARITY - 1)) + 1;
+            int newCapacity = Math.toIntExact( ((size - 1) | (CAPACITY_INCREMENT_GRANULARITY - 1)) + 1L);
             byte[] newMemory = new byte[newCapacity];
-            System.arraycopy(memory, 0, newMemory, 0, capacity);
+            System.arraycopy(memory, 0, newMemory, 0, (int) capacity);
             memory = newMemory;
             capacity = newCapacity;
         }

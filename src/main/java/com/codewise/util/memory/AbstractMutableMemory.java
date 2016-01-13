@@ -11,28 +11,28 @@ import static java.lang.Double.longBitsToDouble;
 
 public abstract class AbstractMutableMemory implements MutableMemory {
 
-    protected int capacity;
+    protected long capacity;
 
     @Override
-    public int capacity() {
+    public long capacity() {
         return capacity;
     }
 
     @Override
-    public double getDouble(int index) {
+    public double getDouble(long index) {
         return longBitsToDouble(getLong(index));
     }
 
     @Override
-    public void putDouble(int index, double value) {
+    public void putDouble(long index, double value) {
         putLong(index, doubleToRawLongBits(value));
     }
 
     @Override
-    public void get(int index, byte[] dst, int offset, int length) {
+    public void get(long index, byte[] dst, int offset, int length) {
         if (length > 0) {
             checkCapacity(index + 1);
-            length = Math.min(capacity - index, length);
+            length = Math.toIntExact(Math.min(capacity - index, length));
             while (length > 0) {
                 byte[] srcPage = getMemoryPageAsByteArray(index);
                 int srcPageLength = getPageLength(index);
@@ -49,11 +49,11 @@ public abstract class AbstractMutableMemory implements MutableMemory {
     }
 
     @Override
-    public void get(int index, ByteBuffer buf) {
+    public void get(long index, ByteBuffer buf) {
         int length = buf.limit() - buf.position();
         if (length > 0) {
             checkCapacity(index + 1);
-            length = Math.min(capacity - index, length);
+            length = Math.toIntExact(Math.min(capacity - index, length));
             while (length > 0) {
                 byte[] srcPage = getMemoryPageAsByteArray(index);
                 int srcPageLength = getPageLength(index);
@@ -69,7 +69,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
     }
 
     @Override
-    public void put(int index, byte[] src, int offset, int length) {
+    public void put(long index, byte[] src, int offset, int length) {
         if (length > 0) {
             ensureCapacity(index + length);
             while (length > 0) {
@@ -88,7 +88,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
     }
 
     @Override
-    public void put(int index, MutableMemory src, int offset, int length) {
+    public void put(long index, MutableMemory src, long offset, long length) {
         assert src instanceof AbstractMutableMemory;
 
         if (length > 0) {
@@ -104,7 +104,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
                 byte[] dstPage = this.getMemoryPageAsByteArray(index);
                 int dstPageLength = this.getPageLength(index);
                 int dstPageOffset = this.getPageOffset(index);
-                int bytesToCopy = Math.min(Math.min(dstPageLength - dstPageOffset, srcPageLength - srcPageOffset), length);
+                int bytesToCopy = Math.toIntExact(Math.min(Math.min(dstPageLength - dstPageOffset, srcPageLength - srcPageOffset), length));
                 System.arraycopy(srcPage, srcPageOffset, dstPage, dstPageOffset, bytesToCopy);
                 index += bytesToCopy;
                 offset += bytesToCopy;
@@ -116,7 +116,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
     }
 
     @Override
-    public int compare(int index, ReadOnlyMemory src, int offset, int length) {
+    public int compare(long index, ReadOnlyMemory src, long offset, long length) {
         assert src instanceof AbstractMutableMemory;
 
         if (length > 0) {
@@ -134,7 +134,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
                 int thisPageLength = this.getPageLength(index);
                 int thisPageOffset = this.getPageOffset(index);
 
-                int bytesToCompare = Math.min(Math.min(thisPageLength - thisPageOffset, thatPageLength - thatPageOffset), length);
+                int bytesToCompare = Math.toIntExact(Math.min(Math.min(thisPageLength - thisPageOffset, thatPageLength - thatPageOffset), length));
 
                 if (MemoryAccess.UNSAFE_MEMORY_ACCESS) {
                     long thisPagePtr = thisPageOffset + MemoryAccess.ARRAY_BYTE_BASE_OFFSET;
@@ -182,7 +182,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer, int offset, int length) {
+    public void iterateOverMemory(MemoryConsumer consumer, long offset, long length) {
         if (length < 0) {
             throw new IllegalArgumentException();
         }
@@ -191,7 +191,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
             int pageOffset = getPageOffset(offset);
             int pageLength = getPageLength(offset);
             byte[] page = getMemoryPageAsByteArray(offset);
-            int dataInPage = Math.min(length, pageLength - pageOffset);
+            int dataInPage = Math.toIntExact(Math.min(length, (long) (pageLength - pageOffset)));
             if (dataInPage > 0) {
                 consumer.accept(page, pageOffset, dataInPage);
                 offset += dataInPage;
@@ -202,23 +202,23 @@ public abstract class AbstractMutableMemory implements MutableMemory {
         }
     }
 
-    protected int getPageOffset(int index) {
-        return index;
+    protected int getPageOffset(long index) {
+        return (int) index;
     }
 
-    protected int getPageLength(int index) {
-        return capacity;
+    protected int getPageLength(long index) {
+        return (int) capacity;
     }
 
-    protected abstract byte[] getMemoryPageAsByteArray(int offset);
+    protected abstract byte[] getMemoryPageAsByteArray(long offset);
 
-    protected void checkCapacity(int size) {
+    protected void checkCapacity(long size) {
         if (MemoryAccess.RANGE_CHECKS && size > capacity) {
             throw new BufferUnderflowException();
         }
     }
 
-    protected void ensureCapacity(int size) {
+    protected void ensureCapacity(long size) {
         if (MemoryAccess.RANGE_CHECKS && size > capacity) {
             throw new BufferOverflowException();
         }

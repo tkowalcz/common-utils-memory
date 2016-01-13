@@ -2,6 +2,8 @@ package com.codewise.util.memory;
 
 import com.codewise.util.lowlevel.MemoryAccess;
 
+import static com.codewise.util.lowlevel.MemoryAccess.ARRAY_BYTE_BASE_OFFSET;
+
 public class FixedUnsafeMutableMemory extends AbstractMutableMemory implements BytesWrappingCapableMemory {
 
     protected byte[] memory;
@@ -23,67 +25,67 @@ public class FixedUnsafeMutableMemory extends AbstractMutableMemory implements B
     }
 
     @Override
-    public byte get(int index) {
+    public byte get(long index) {
         checkCapacity(index + Byte.BYTES);
-        return MemoryAccess.getByteUnsafe(memory, index);
+        return MemoryAccess.getByteUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index);
     }
 
     @Override
-    public void put(int index, byte b) {
+    public void put(long index, byte b) {
         ensureCapacity(index + Byte.BYTES);
-        MemoryAccess.setByteUnsafe(memory, index, b);
+        MemoryAccess.setByteUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index, b);
     }
 
     @Override
-    public char getChar(int index) {
+    public char getChar(long index) {
         checkCapacity(index + Character.BYTES);
-        return MemoryAccess.getCharUnsafe(memory, index);
+        return MemoryAccess.getCharUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index);
     }
 
     @Override
-    public void putChar(int index, char value) {
+    public void putChar(long index, char value) {
         ensureCapacity(index + Character.BYTES);
-        MemoryAccess.setCharUnsafe(memory, index, value);
+        MemoryAccess.setCharUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index, value);
     }
 
     @Override
-    public short getShort(int index) {
+    public short getShort(long index) {
         checkCapacity(index + Short.BYTES);
-        return MemoryAccess.getShortUnsafe(memory, index);
+        return MemoryAccess.getShortUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index);
     }
 
     @Override
-    public void putShort(int index, short value) {
+    public void putShort(long index, short value) {
         ensureCapacity(index + Short.BYTES);
-        MemoryAccess.setShortUnsafe(memory, index, value);
+        MemoryAccess.setShortUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index, value);
     }
 
     @Override
-    public int getInt(int index) {
+    public int getInt(long index) {
         checkCapacity(index + Integer.BYTES);
-        return MemoryAccess.getIntUnsafe(memory, index);
+        return MemoryAccess.getIntUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index);
     }
 
     @Override
-    public void putInt(int index, int value) {
+    public void putInt(long index, int value) {
         ensureCapacity(index + Integer.BYTES);
-        MemoryAccess.setIntUnsafe(memory, index, value);
+        MemoryAccess.setIntUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index, value);
     }
 
     @Override
-    public long getLong(int index) {
+    public long getLong(long index) {
         checkCapacity(index + Long.BYTES);
-        return MemoryAccess.getLongUnsafe(memory, index);
+        return MemoryAccess.getLongUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index);
     }
 
     @Override
-    public void putLong(int index, long value) {
+    public void putLong(long index, long value) {
         ensureCapacity(index + Long.BYTES);
-        MemoryAccess.setLongUnsafe(memory, index, value);
+        MemoryAccess.setLongUnsafe(memory, ARRAY_BYTE_BASE_OFFSET + index, value);
     }
 
     @Override
-    protected byte[] getMemoryPageAsByteArray(int offset) {
+    protected byte[] getMemoryPageAsByteArray(long offset) {
         return memory;
     }
 }

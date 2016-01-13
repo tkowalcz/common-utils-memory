@@ -26,7 +26,7 @@ abstract class ReadOnlyByteBufferTestBase<B extends ReadOnlyByteBufferImpl<?>> e
     @BeforeMethod
     public void setUp() throws Exception {
         memoryMockWithCapacityOf50 = mock(MutableMemory.class);
-        given(memoryMockWithCapacityOf50.capacity()).willReturn(50);
+        given(memoryMockWithCapacityOf50.capacity()).willReturn(50L);
     }
 
     @DataProvider(name = GET_METHODS_WITHOUT_INDEX)
@@ -84,7 +84,7 @@ abstract class ReadOnlyByteBufferTestBase<B extends ReadOnlyByteBufferImpl<?>> e
     @Test(dataProvider = GET_METHODS_WITHOUT_INDEX)
     public void getShouldDelegateToMemoryComputingMemoryPositionUsingBaseOffset(MethodCall<ReadOnlyByteBuffer> getMethod, MethodCall<MutableMemory> memoryGetMethod, int returnTypeSize, Object returnValueExample) {
         // given
-        whenCall(memoryGetMethod).invokedOn(memoryMockWithCapacityOf50).withParams(anyInt()).thenReturn(returnValueExample);
+        whenCall(memoryGetMethod).invokedOn(memoryMockWithCapacityOf50).withParams(anyLong()).thenReturn(returnValueExample);
         ReadOnlyByteBuffer buffer = bufferForMemoryAndBaseOffset(memoryMockWithCapacityOf50, 10).position(1);
 
         // when
@@ -149,7 +149,7 @@ abstract class ReadOnlyByteBufferTestBase<B extends ReadOnlyByteBufferImpl<?>> e
         buffer.get(buf);
 
         // then
-        verify(memoryMockWithCapacityOf50).get(1, buf, 0, buf.length);
+        verify(memoryMockWithCapacityOf50).get(1L, buf, 0, buf.length);
     }
 
     @Test
@@ -162,7 +162,7 @@ abstract class ReadOnlyByteBufferTestBase<B extends ReadOnlyByteBufferImpl<?>> e
         buffer.get(buf, 2, 8);
 
         // then
-        verify(memoryMockWithCapacityOf50).get(1, buf, 2, 8);
+        verify(memoryMockWithCapacityOf50).get(1L, buf, 2, 8);
     }
 
     @Test
@@ -175,7 +175,7 @@ abstract class ReadOnlyByteBufferTestBase<B extends ReadOnlyByteBufferImpl<?>> e
         buffer.get(buf);
 
         // then
-        verify(memoryMockWithCapacityOf50).get(11, buf, 0, buf.length);
+        verify(memoryMockWithCapacityOf50).get(11L, buf, 0, buf.length);
     }
 
     @Test
@@ -188,7 +188,7 @@ abstract class ReadOnlyByteBufferTestBase<B extends ReadOnlyByteBufferImpl<?>> e
         buffer.get(buf, 2, 8);
 
         // then
-        verify(memoryMockWithCapacityOf50).get(11, buf, 2, 8);
+        verify(memoryMockWithCapacityOf50).get(11L, buf, 2, 8);
     }
 
     @Test
@@ -277,10 +277,10 @@ abstract class ReadOnlyByteBufferTestBase<B extends ReadOnlyByteBufferImpl<?>> e
     }
 
     @FunctionalInterface
-    interface BufferGetIndexedMethod extends BiFunction<ReadOnlyByteBuffer, Integer, Object>, Serializable {
+    interface BufferGetIndexedMethod extends BiFunction<ReadOnlyByteBuffer, Long, Object>, Serializable {
     }
 
     @FunctionalInterface
-    interface MemoryGetMethod extends BiFunction<MutableMemory, Integer, Object>, Serializable {
+    interface MemoryGetMethod extends BiFunction<MutableMemory, Long, Object>, Serializable {
     }
 }

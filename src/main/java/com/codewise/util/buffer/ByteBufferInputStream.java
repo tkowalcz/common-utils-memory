@@ -26,7 +26,7 @@ public class ByteBufferInputStream extends InputStream {
             return -1;
         }
 
-        int lengthToRead = Math.min(byteBuffer.remaining(), length);
+        int lengthToRead = Math.toIntExact(Math.min(byteBuffer.remaining(), length));
         byteBuffer.get(array, offset, lengthToRead);
 
         return lengthToRead;
@@ -34,7 +34,7 @@ public class ByteBufferInputStream extends InputStream {
 
     @Override
     public long skip(long amount) throws IOException {
-        int lengthToSkip = (int) Math.min(byteBuffer.remaining(), amount);
+        long lengthToSkip = Math.min(byteBuffer.remaining(), amount);
         byteBuffer.position(byteBuffer.position() + lengthToSkip);
 
         return lengthToSkip;
@@ -42,6 +42,6 @@ public class ByteBufferInputStream extends InputStream {
 
     @Override
     public int available() throws IOException {
-        return byteBuffer.remaining();
+        return Math.toIntExact(byteBuffer.remaining());
     }
 }

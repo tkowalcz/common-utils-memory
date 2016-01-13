@@ -20,7 +20,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
     @BeforeMethod
     public void setUpMemoryMockWithCapacityOf10() {
         memoryMockWithCapacityOf10 = mock(MutableMemory.class);
-        given(memoryMockWithCapacityOf10.capacity()).willReturn(10);
+        given(memoryMockWithCapacityOf10.capacity()).willReturn(10L);
     }
 
     @Test(expectedExceptions = AssertionError.class)
@@ -38,7 +38,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> buffer = bufferForMemory(memoryMockWithCapacityOf10);
 
         // when
-        int capacity = buffer.capacity();
+        long capacity = buffer.capacity();
 
         // then
         verify(memoryMockWithCapacityOf10).capacity();
@@ -53,7 +53,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> buffer = bufferForMemoryAndBaseOffset(memoryMockWithCapacityOf10, 5);
 
         // when
-        int capacity = buffer.capacity();
+        long capacity = buffer.capacity();
 
         // then
         verify(memoryMockWithCapacityOf10).capacity();
@@ -78,7 +78,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         buffer.position(5);
 
         // when
-        int position = buffer.position();
+        long position = buffer.position();
 
         // then
         assertThat(position).isEqualTo(5);
@@ -126,7 +126,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> buffer = bufferForMemory(memoryMockWithCapacityOf10);
 
         // when
-        int limit = buffer.limit();
+        long limit = buffer.limit();
 
         // then
         verify(memoryMockWithCapacityOf10).capacity();
@@ -139,15 +139,15 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
     public void limitQueryShouldDelegateToUnderlyingMemoryIfLimitWasResetToMemoryCapacity() {
         // given
         MutableMemory memory = mock(MutableMemory.class);
-        given(memory.capacity()).willReturn(10, 20);
+        given(memory.capacity()).willReturn(10L, 20L);
 
         AbstractByteBuffer<?> buffer = bufferForMemory(memory);
         buffer.limit = 5;
 
         // when
-        int limitBeforeReset = buffer.limit();  // limit is 5 - no interaction with memory
+        long limitBeforeReset = buffer.limit();  // limit is 5 - no interaction with memory
         buffer.limit(10);                       // limit change to capacity - memory.capacity() will be called to check that fact
-        int limitAfterReset = buffer.limit();   // limit will delegate to memory.capacity()
+        long limitAfterReset = buffer.limit();   // limit will delegate to memory.capacity()
 
         // then
         verify(memory, times(2)).capacity();
@@ -164,7 +164,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> buffer = bufferForMemoryAndBaseOffset(memoryMockWithCapacityOf10, 5);
 
         // when
-        int limit = buffer.limit();
+        long limit = buffer.limit();
 
         // then
         verify(memoryMockWithCapacityOf10).capacity();
@@ -179,7 +179,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> buffer = bufferForMemory(memoryMockWithCapacityOf10);
 
         // when
-        int limit = buffer.limit(5).limit();
+        long limit = buffer.limit(5).limit();
 
         // then
         assertThat(limit).isEqualTo(5);
@@ -230,7 +230,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         buffer.limit(8).position(3);
 
         // when
-        int remaining = buffer.remaining();
+        long remaining = buffer.remaining();
 
         // then
         assertThat(remaining).isEqualTo(5);
@@ -428,16 +428,16 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> a = bufferForMemory(memoryMockWithCapacityOf10).position(5);
         ByteBufferBase<?> b = bufferForMemory(memoryMockWithCapacityOf10).limit(4);
 
-        given(memoryMockWithCapacityOf10.compare(anyInt(), any(MutableMemory.class), anyInt(), anyInt())).willReturn(Integer.MIN_VALUE);
+        given(memoryMockWithCapacityOf10.compare(anyLong(), any(MutableMemory.class), anyLong(), anyLong())).willReturn(Integer.MIN_VALUE);
 
         // when
         int result = a.compareTo(b);
 
         // then
-        ArgumentCaptor<Integer> indexArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Long> indexArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<MutableMemory> memoryArgumentCaptor = ArgumentCaptor.forClass(MutableMemory.class);
-        ArgumentCaptor<Integer> offsetArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<Integer> lengthArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Long> offsetArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> lengthArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(memoryMockWithCapacityOf10)
                 .compare(indexArgumentCaptor.capture(), memoryArgumentCaptor.capture(),
                         offsetArgumentCaptor.capture(), lengthArgumentCaptor.capture());
@@ -456,16 +456,16 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> a = bufferForMemory(memoryMockWithCapacityOf10).position(5);
         ByteBufferBase<?> b = bufferForMemory(memoryMockWithCapacityOf10).limit(4);
 
-        given(memoryMockWithCapacityOf10.compare(anyInt(), any(MutableMemory.class), anyInt(), anyInt())).willReturn(0);
+        given(memoryMockWithCapacityOf10.compare(anyLong(), any(MutableMemory.class), anyLong(), anyLong())).willReturn(0);
 
         // when
         int result = a.compareTo(b);
 
         // then
-        ArgumentCaptor<Integer> indexArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Long> indexArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<MutableMemory> memoryArgumentCaptor = ArgumentCaptor.forClass(MutableMemory.class);
-        ArgumentCaptor<Integer> offsetArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<Integer> lengthArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Long> offsetArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> lengthArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(memoryMockWithCapacityOf10)
                 .compare(indexArgumentCaptor.capture(), memoryArgumentCaptor.capture(),
                         offsetArgumentCaptor.capture(), lengthArgumentCaptor.capture());
@@ -475,7 +475,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         assertThat(offsetArgumentCaptor.getValue()).isEqualTo(0);
         assertThat(lengthArgumentCaptor.getValue()).isEqualTo(Math.min(a.remaining(), b.remaining()));
 
-        assertThat(result).isEqualTo(a.remaining() - b.remaining());
+        assertThat(result).isEqualTo((int) (a.remaining() - b.remaining()));
     }
 
     // equals
@@ -565,16 +565,16 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> a = bufferForMemory(memoryMockWithCapacityOf10).position(5);
         ByteBufferBase<?> b = bufferForMemory(memoryMockWithCapacityOf10).limit(5);
 
-        given(memoryMockWithCapacityOf10.compare(anyInt(), any(MutableMemory.class), anyInt(), anyInt())).willReturn(Integer.MIN_VALUE);
+        given(memoryMockWithCapacityOf10.compare(anyLong(), any(MutableMemory.class), anyLong(), anyLong())).willReturn(Integer.MIN_VALUE);
 
         // when
         boolean actual = a.equals(b);
 
         // then
-        ArgumentCaptor<Integer> indexArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Long> indexArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<MutableMemory> memoryArgumentCaptor = ArgumentCaptor.forClass(MutableMemory.class);
-        ArgumentCaptor<Integer> offsetArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<Integer> lengthArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Long> offsetArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> lengthArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(memoryMockWithCapacityOf10)
                 .compare(indexArgumentCaptor.capture(), memoryArgumentCaptor.capture(),
                         offsetArgumentCaptor.capture(), lengthArgumentCaptor.capture());
@@ -591,13 +591,13 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> a = bufferForMemory(memoryMockWithCapacityOf10).position(5);
         ByteBufferBase<?> b = bufferForMemory(memoryMockWithCapacityOf10).limit(5);
 
-        given(memoryMockWithCapacityOf10.compare(anyInt(), any(MutableMemory.class), anyInt(), anyInt())).willReturn(0);
+        given(memoryMockWithCapacityOf10.compare(anyLong(), any(MutableMemory.class), anyLong(), anyLong())).willReturn(0);
 
         // when
         boolean actual = a.equals(b);
 
         // then
-        verify(memoryMockWithCapacityOf10).compare(anyInt(), any(MutableMemory.class), anyInt(), anyInt());
+        verify(memoryMockWithCapacityOf10).compare(anyLong(), any(MutableMemory.class), anyLong(), anyLong());
 
         assertThat(actual).isTrue();
     }
@@ -608,13 +608,13 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         ByteBufferBase<?> a = bufferForMemory(memoryMockWithCapacityOf10).position(5);
         ByteBufferBase<?> b = bufferForMemory(memoryMockWithCapacityOf10).limit(5);
 
-        given(memoryMockWithCapacityOf10.compare(anyInt(), any(MutableMemory.class), anyInt(), anyInt())).willReturn(1);
+        given(memoryMockWithCapacityOf10.compare(anyLong(), any(MutableMemory.class), anyLong(), anyLong())).willReturn(1);
 
         // when
         boolean actual = a.equals(b);
 
         // then
-        verify(memoryMockWithCapacityOf10).compare(anyInt(), any(MutableMemory.class), anyInt(), anyInt());
+        verify(memoryMockWithCapacityOf10).compare(anyLong(), any(MutableMemory.class), anyLong(), anyLong());
 
         assertThat(actual).isFalse();
     }
@@ -626,7 +626,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         AbstractByteBuffer<?> buffer = bufferUninitialized();
 
         // when
-        int offset = buffer.getOffset();
+        long offset = buffer.getOffset();
     }
 
     @Test(expectedExceptions = AssertionError.class)
@@ -635,7 +635,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         AbstractByteBuffer<?> buffer = bufferUninitialized();
 
         // when
-        int offset = buffer.getOffset(0);
+        long offset = buffer.getOffset(0);
     }
 
     @Test
@@ -645,7 +645,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         buffer.position(3);
 
         // when
-        int offset = buffer.getOffset();
+        long offset = buffer.getOffset();
 
         // then
         assertThat(offset).isEqualTo(5);
@@ -657,7 +657,7 @@ public abstract class ByteBufferTestBase<B extends AbstractByteBuffer<?>> {
         AbstractByteBuffer<?> buffer = bufferForMemoryAndBaseOffset(memoryMockWithCapacityOf10, 2);
 
         // when
-        int offset = buffer.getOffset(3);
+        long offset = buffer.getOffset(3);
 
         // then
         assertThat(offset).isEqualTo(5);

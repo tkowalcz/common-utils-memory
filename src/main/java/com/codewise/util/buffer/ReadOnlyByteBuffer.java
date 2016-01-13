@@ -9,7 +9,11 @@ public interface ReadOnlyByteBuffer<B extends ReadOnlyByteBuffer<B>> extends Byt
 
     byte get();
 
-    byte get(int index);
+    byte get(long index);
+
+    default byte get(int index) {
+        return get((long) index);
+    }
 
     B get(byte[] dst, int offset, int length);
 
@@ -21,23 +25,43 @@ public interface ReadOnlyByteBuffer<B extends ReadOnlyByteBuffer<B>> extends Byt
 
     char getChar();
 
-    char getChar(int index);
+    char getChar(long index);
+
+    default char getChar(int index) {
+        return getChar((long) index);
+    }
 
     short getShort();
 
-    short getShort(int index);
+    short getShort(long index);
+
+    default short getShort(int index) {
+        return getShort((long) index);
+    }
 
     int getInt();
 
-    int getInt(int index);
+    int getInt(long index);
+
+    default int getInt(int index) {
+        return getInt((long) index);
+    }
 
     long getLong();
 
-    long getLong(int index);
+    long getLong(long index);
+
+    default long getLong(int index) {
+        return getLong((long) index);
+    }
 
     double getDouble();
 
-    double getDouble(int index);
+    double getDouble(long index);
+
+    default double getDouble(int index) {
+        return getDouble((long) index);
+    }
 
     /**
      * Iterate over buffer backing memory from current buffer position to it's current limit.
@@ -54,7 +78,7 @@ public interface ReadOnlyByteBuffer<B extends ReadOnlyByteBuffer<B>> extends Byt
      * @param index    index of first byte of interest
      * @param length   number of bytes of interest
      */
-    void iterateOverMemory(MemoryConsumer consumer, int index, int length);
+    void iterateOverMemory(MemoryConsumer consumer, long index, long length);
 
     ReadOnlyByteBuffer<?> wrap(ReadOnlyMemory memory);
 

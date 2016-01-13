@@ -5,28 +5,40 @@ import java.util.function.Supplier;
 @SuppressWarnings("unchecked")
 public interface ByteBufferBase<B extends ByteBufferBase> extends Comparable<ByteBufferBase<?>> {
 
-    int capacity();
+    long capacity();
 
-    int position();
+    long position();
 
-    B position(int newPosition);
+    B position(long newPosition);
 
-    int limit();
+    default B position(int newPosition) {
+        return position((long) newPosition);
+    }
+
+    long limit();
 
     boolean isLimitAtCapacity();
 
-    B limit(int newLimit);
+    B limit(long newLimit);
 
-    int remaining();
+    default B limit(int newLimit) {
+        return limit((long) newLimit);
+    }
+
+    long remaining();
 
     boolean hasRemaining();
 
     default B clear() {
-        resetAtPosition(0);
+        resetAtPosition(0L);
         return (B) this;
     }
 
-    B resetAtPosition(int position);
+    B resetAtPosition(long position);
+
+    default B resetAtPosition(int position) {
+        return resetAtPosition((long) position);
+    }
 
     default B flip() {
         limit(position());

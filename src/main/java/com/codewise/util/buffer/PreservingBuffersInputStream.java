@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class PreservingBuffersInputStream extends FilterInputStream {
 
-    private final int[][] originalPositionAndLimit;
+    private final long[][] originalPositionAndLimit;
     private final ReadOnlyByteBuffer[] buffers;
 
     public PreservingBuffersInputStream(ReadOnlyByteBuffer... buffers) {
@@ -44,10 +44,10 @@ public class PreservingBuffersInputStream extends FilterInputStream {
         }
     }
 
-    private static int[][] getPositionAndLimit(ReadOnlyByteBuffer... bufs) {
-        int[][] positionAndLimit = new int[bufs.length][];
+    private static long[][] getPositionAndLimit(ReadOnlyByteBuffer... bufs) {
+        long[][] positionAndLimit = new long[bufs.length][];
         for (int i = 0; i < bufs.length; i++) {
-            positionAndLimit[i] = new int[]{bufs[i].position(), bufs[i].limit()};
+            positionAndLimit[i] = new long[]{bufs[i].position(), bufs[i].limit()};
         }
         return positionAndLimit;
     }

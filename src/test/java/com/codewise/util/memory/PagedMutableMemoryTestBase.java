@@ -11,6 +11,7 @@ import pl.codewise.test.utils.MethodCallException;
 import java.nio.BufferUnderflowException;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,12 +44,12 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
     @DataProvider(name = PUT_AND_GET_METHODS)
     public Object[][] putAndGetMethods() {
         return new Object[][]{
-                {methodForCall((MutableMemory m) -> m.put(0, (byte) 0)), methodForCall((MutableMemory m) -> m.get(0)), TEST_BYTES[0], Byte.BYTES},
-                {methodForCall((MutableMemory m) -> m.putChar(0, 'a')), methodForCall((MutableMemory m) -> m.getChar(0)), TEST_BYTES_AS_BUFFER.getChar(0), Character.BYTES},
-                {methodForCall((MutableMemory m) -> m.putShort(0, (short) 0)), methodForCall((MutableMemory m) -> m.getShort(0)), TEST_BYTES_AS_BUFFER.getShort(0), Short.BYTES},
-                {methodForCall((MutableMemory m) -> m.putInt(0, 0)), methodForCall((MutableMemory m) -> m.getInt(0)), TEST_BYTES_AS_BUFFER.getInt(0), Integer.BYTES},
-                {methodForCall((MutableMemory m) -> m.putLong(0, 0l)), methodForCall((MutableMemory m) -> m.getLong(0)), TEST_BYTES_AS_BUFFER.getLong(0), Long.BYTES},
-                {methodForCall((MutableMemory m) -> m.putDouble(0, 0.0d)), methodForCall((MutableMemory m) -> m.getDouble(0)), TEST_BYTES_AS_BUFFER.getDouble(0), Double.BYTES},
+                {methodForCall((MutableMemory m) -> m.put(0L, (byte) 0)), methodForCall((MutableMemory m) -> m.get(0L)), TEST_BYTES[0], Byte.BYTES},
+                {methodForCall((MutableMemory m) -> m.putChar(0L, 'a')), methodForCall((MutableMemory m) -> m.getChar(0L)), TEST_BYTES_AS_BUFFER.getChar(0), Character.BYTES},
+                {methodForCall((MutableMemory m) -> m.putShort(0L, (short) 0)), methodForCall((MutableMemory m) -> m.getShort(0L)), TEST_BYTES_AS_BUFFER.getShort(0), Short.BYTES},
+                {methodForCall((MutableMemory m) -> m.putInt(0L, 0)), methodForCall((MutableMemory m) -> m.getInt(0L)), TEST_BYTES_AS_BUFFER.getInt(0), Integer.BYTES},
+                {methodForCall((MutableMemory m) -> m.putLong(0L, 0l)), methodForCall((MutableMemory m) -> m.getLong(0L)), TEST_BYTES_AS_BUFFER.getLong(0), Long.BYTES},
+                {methodForCall((MutableMemory m) -> m.putDouble(0L, 0.0d)), methodForCall((MutableMemory m) -> m.getDouble(0L)), TEST_BYTES_AS_BUFFER.getDouble(0), Double.BYTES},
         };
     }
 
@@ -59,7 +60,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
         final int pageSize = 1 << pageSizeBits;
 
         AbstractPagedMutableMemory memory = newMemory(4, pageSizeBits, pageSize);
-        int capacity = memory.capacity();
+        long capacity = memory.capacity();
 
         assert capacity == pageSize;
         assert memory.memory[0] != null;
@@ -85,7 +86,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
         final int pageSize = 1 << pageSizeBits;
 
         AbstractPagedMutableMemory memory = newMemory(4, pageSizeBits, pageSize);
-        int capacity = memory.capacity();
+        long capacity = memory.capacity();
 
         assert capacity == pageSize;
         assert memory.memory[0] != null;
@@ -168,7 +169,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
     @Test(expectedExceptions = BufferUnderflowException.class, enabled = MemoryAccess.RANGE_CHECKS)
     public void shouldUnderflowWhenGetByteArrayFromOutsideOfBuffer() {
         // given
-        byte[] buf = new byte[memory.capacity() + 1];
+        byte[] buf = new byte[(int) memory.capacity() + 1];
 
         // when
         memory.get(PAGE_SIZE, buf, 0, buf.length);
@@ -178,7 +179,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
     public void shouldNotUnderflowWhenGetByteArray() {
         // given
         setUpMemory();
-        byte[] buf = new byte[memory.capacity() + 1];
+        byte[] buf = new byte[(int) memory.capacity() + 1];
 
         // when
         memory.get(0, buf, 0, buf.length);
@@ -214,7 +215,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
 
         // then
         assertThat(memory.capacity()).isEqualTo(pageSize);
-        AtomicInteger iteratedBytesCount = new AtomicInteger(0);
+        AtomicLong iteratedBytesCount = new AtomicLong(0);
         memory.iterateOverMemory((byte[] page, int offset, int length) -> {
             assertThat(offset).isEqualTo(0);
             assertThat(length).isEqualTo(pageSize);
@@ -236,7 +237,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
 
         // then
         assertThat(memory.capacity()).isEqualTo(2 * pageSize);
-        AtomicInteger iteratedBytesCount = new AtomicInteger(0);
+        AtomicLong iteratedBytesCount = new AtomicLong(0);
         memory.iterateOverMemory((byte[] page, int offset, int length) -> {
             assertThat(offset).isEqualTo(0);
             assertThat(length).isEqualTo(pageSize);
@@ -258,7 +259,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
 
         // then
         assertThat(memory.capacity()).isEqualTo(4 * pageSize);
-        AtomicInteger iteratedBytesCount = new AtomicInteger(0);
+        AtomicLong iteratedBytesCount = new AtomicLong(0);
         memory.iterateOverMemory((byte[] page, int offset, int length) -> {
             assertThat(offset).isEqualTo(0);
             assertThat(length).isEqualTo(pageSize);
@@ -280,7 +281,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
 
         // then
         assertThat(memory.capacity()).isEqualTo(3 * pageSize);
-        AtomicInteger iteratedBytesCount = new AtomicInteger(0);
+        AtomicLong iteratedBytesCount = new AtomicLong(0);
         memory.iterateOverMemory((byte[] page, int offset, int length) -> {
             assertThat(offset).isEqualTo(0);
             assertThat(length).isEqualTo(pageSize);
