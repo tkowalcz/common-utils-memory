@@ -4,6 +4,7 @@ import com.codewise.util.lowlevel.MemoryAccess;
 import com.google.common.base.Preconditions;
 
 public class MemoryUtils {
+/*
     public static int compare(MemoryIterator iterator1, long offset1,
                               MemoryIterator iterator2, long offset2, long length) {
         if (length > 0) {
@@ -70,6 +71,7 @@ public class MemoryUtils {
             throw new IllegalArgumentException();
         }
     }
+*/
 
     public static int compare(byte[] memory1, int offset1, byte[] memory2, int offset2, int length) {
         if (length == 0) {
