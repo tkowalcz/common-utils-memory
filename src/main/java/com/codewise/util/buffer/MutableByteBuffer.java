@@ -61,6 +61,10 @@ public interface MutableByteBuffer extends ReadOnlyByteBuffer<MutableByteBuffer>
     }
 
     MutableByteBuffer wrap(MutableMemory memory);
+    
+    default MutableMemory getMemory() {
+        return new MutableByteBufferBasedMemoryView(this);
+    }
 
     /**
      * Read-only view of this byte buffer - all properties and memory are shared.

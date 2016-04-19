@@ -130,6 +130,11 @@ class MutableByteBufferImpl extends ReadOnlyByteBufferImpl<MutableByteBuffer> im
     }
 
     @Override
+    public MutableMemory getMemory() {
+        return baseOffset == 0 ? memory : new MutableByteBufferBasedMemoryView(this);
+    }
+
+    @Override
     public Supplier<MutableByteBuffer> uninitializedBufferFactory() {
         return MutableByteBufferImpl::new;
     }

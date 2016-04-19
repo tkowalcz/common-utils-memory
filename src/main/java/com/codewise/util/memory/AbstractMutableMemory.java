@@ -136,37 +136,9 @@ public abstract class AbstractMutableMemory implements MutableMemory {
 
                 int bytesToCompare = Math.toIntExact(Math.min(Math.min(thisPageLength - thisPageOffset, thatPageLength - thatPageOffset), length));
 
-                if (MemoryAccess.UNSAFE_MEMORY_ACCESS) {
-                    long thisPagePtr = thisPageOffset + MemoryAccess.ARRAY_BYTE_BASE_OFFSET;
-                    long thatPagePtr = thatPageOffset + MemoryAccess.ARRAY_BYTE_BASE_OFFSET;
-
-                    for (int idx = bytesToCompare >>> 3; idx > 0; idx--) {
-                        long thisL = MemoryAccess.getLongUnsafe(thisPage, thisPagePtr);
-                        long thatL = MemoryAccess.getLongUnsafe(thatPage, thatPagePtr);
-                        int cmp = Long.compareUnsigned(thisL, thatL);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                        thisPagePtr += 8;
-                        thatPagePtr += 8;
-                    }
-                    for (int idx = bytesToCompare & 0x7; idx > 0; idx--) {
-                        byte thisB = MemoryAccess.getByteUnsafe(thisPage, thisPagePtr);
-                        byte thatB = MemoryAccess.getByteUnsafe(thatPage, thatPagePtr);
-                        int cmp = Integer.compare((int) thisB & 0xFF, (int) thatB & 0xFF);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                        thisPagePtr++;
-                        thatPagePtr++;
-                    }
-                } else {
-                    for (int idx = bytesToCompare; idx > 0; idx--) {
-                        int cmp = Integer.compare((int) thisPage[thisPageOffset++] & 0xFF, (int) thatPage[thatPageOffset++] & 0xFF);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
+                int cmp = MemoryUtils.compare(thisPage, thisPageOffset, thatPage, thatPageOffset, bytesToCompare);
+                if (cmp == 0) {
+                    return 0;
                 }
 
                 index += bytesToCompare;
