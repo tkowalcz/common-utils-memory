@@ -137,7 +137,7 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
         if (that instanceof AbstractByteBuffer) {
             that = ((AbstractByteBuffer) that).memory;
         }
-        return memory.compare(index, that, offset, length);
+        return memory.compare(getOffset(index), that, offset, length);
     }
 
     @Override
