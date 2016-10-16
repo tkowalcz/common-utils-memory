@@ -1,11 +1,11 @@
 package pl.codewise.util.buffer;
 
-import com.google.common.base.Preconditions;
-import sun.misc.Unsafe;
-
 import java.lang.reflect.Field;
 import java.nio.ByteOrder;
 import java.util.function.Consumer;
+
+import com.google.common.base.Preconditions;
+import sun.misc.Unsafe;
 
 final class MemoryAccess {
 
@@ -25,7 +25,6 @@ final class MemoryAccess {
         }
         UNSAFE = unsafe;
     }
-//    static final SafeUnsafe UNSAFE = new SafeUnsafe();
 
     public static final long ARRAY_OBJECT_BASE_OFFSET = Unsafe.ARRAY_OBJECT_BASE_OFFSET;
     public static final long ARRAY_OBJECT_INDEX_SCALE = Unsafe.ARRAY_OBJECT_INDEX_SCALE;
@@ -50,6 +49,18 @@ final class MemoryAccess {
 
     public static void setByteUnsafe(Object memory, long offset, byte value) {
         UNSAFE.putByte(memory, offset, value);
+    }
+
+    public static void copyBytesToUnsafe(long addressOffset, int index, byte[] src, int offset, int length) {
+        UNSAFE.copyMemory(src, ARRAY_BYTE_BASE_OFFSET + offset, null, addressOffset + index, length);
+    }
+
+    public static void copyUnsafeToBytes(long addressOffset, int index, byte[] dst, int offset, int length) {
+        UNSAFE.copyMemory(null, addressOffset + index, dst, ARRAY_BYTE_BASE_OFFSET + offset, length);
+    }
+
+    public static long allocateMemory(long size) {
+        return UNSAFE.allocateMemory(size);
     }
 
     //---------------------
@@ -100,7 +111,7 @@ final class MemoryAccess {
     }
 
     public static void setCharSafe(byte[] memory, int index, char value) {
-        memory[index]     = (byte) (value >>> 8);
+        memory[index] = (byte) (value >>> 8);
         memory[index + 1] = (byte) value;
     }
 
@@ -152,7 +163,7 @@ final class MemoryAccess {
     }
 
     public static void setShortSafe(byte[] memory, int index, short value) {
-        memory[index]     = (byte) (value >>> 8);
+        memory[index] = (byte) (value >>> 8);
         memory[index + 1] = (byte) value;
     }
 
@@ -202,12 +213,12 @@ final class MemoryAccess {
     public static int getIntSafe(byte[] memory, int index) {
         return (memory[index++] & 0xff) << 24 |
                 (memory[index++] & 0xff) << 16 |
-                (memory[index++] & 0xff) << 8  |
-                memory[index]   & 0xff;
+                (memory[index++] & 0xff) << 8 |
+                memory[index] & 0xff;
     }
 
     public static void setIntSafe(byte[] memory, int index, int value) {
-        memory[index]     = (byte) (value >>> 24);
+        memory[index] = (byte) (value >>> 24);
         memory[index + 1] = (byte) (value >>> 16);
         memory[index + 2] = (byte) (value >>> 8);
         memory[index + 3] = (byte) value;
@@ -263,12 +274,12 @@ final class MemoryAccess {
                 ((long) memory[index++] & 0xff) << 32 |
                 ((long) memory[index++] & 0xff) << 24 |
                 ((long) memory[index++] & 0xff) << 16 |
-                ((long) memory[index++] & 0xff) << 8  |
-                (long) memory[index]   & 0xff;
+                ((long) memory[index++] & 0xff) << 8 |
+                (long) memory[index] & 0xff;
     }
 
     public static void setLongSafe(byte[] memory, int index, long value) {
-        memory[index]     = (byte) (value >>> 56);
+        memory[index] = (byte) (value >>> 56);
         memory[index + 1] = (byte) (value >>> 48);
         memory[index + 2] = (byte) (value >>> 40);
         memory[index + 3] = (byte) (value >>> 32);
