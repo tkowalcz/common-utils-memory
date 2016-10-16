@@ -351,7 +351,7 @@ public final class MemoryAccess {
         UNSAFE.copyMemory(mem1, offset1, mem2, offset2, length);
     }
 
-    public static void copyMemoryUnsage(long address1, long address2, long length) {
+    public static void copyMemoryUnsafe(long address1, long address2, long length) {
         UNSAFE.copyMemory(address1, address2, length);
     }
 
