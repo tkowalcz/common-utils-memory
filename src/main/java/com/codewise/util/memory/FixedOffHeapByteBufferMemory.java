@@ -11,7 +11,7 @@ import static com.codewise.util.lowlevel.MemoryAccess.*;
 import static java.lang.Double.doubleToRawLongBits;
 import static java.lang.Double.longBitsToDouble;
 
-class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
+public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
 
     private long capacity;
     private long addressOffset;
@@ -134,15 +134,18 @@ class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
 
     @Override
     public void put(long index, MutableMemory src, long offset, long length) {
-        checkCapacity(index + length);
-
-        long i = 0;
-        for (; i < length; i += 8) {
-            putLong(index + i, src.getLong(offset + i));
-        }
-
-        for (; i < offset + length; i++) {
-            put(index + i, src.get(offset + i));
+        ensureCapacity(index + length);
+        if (src instanceof OffHeapMutableMemory) {
+            MemoryAccess.copyMemoryUnsafe(((OffHeapMutableMemory) src).addressOffset() + offset, addressOffset + index, length);
+        } else {
+            src.iterateOverMemory(new MemoryConsumer() {
+                long localIndex = index;
+                @Override
+                public void accept(byte[] memory, int offset, int length) {
+                    put(localIndex, memory, offset, length);
+                    localIndex += length;
+                }
+            }, offset, length);
         }
     }
 

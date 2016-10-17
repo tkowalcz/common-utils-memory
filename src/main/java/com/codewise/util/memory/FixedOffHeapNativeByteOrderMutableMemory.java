@@ -157,6 +157,7 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
 
     @Override
     public void put(long index, MutableMemory src, long offset, long length) {
+        ensureCapacity(index + length);
         if (src instanceof OffHeapMutableMemory) {
             MemoryAccess.copyMemoryUnsafe(((OffHeapMutableMemory) src).addressOffset() + offset, addressOffset + index, length);
         } else {
