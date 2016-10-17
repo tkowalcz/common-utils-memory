@@ -9,12 +9,12 @@ import static com.codewise.util.lowlevel.MemoryAccess.*;
 import static java.lang.Double.doubleToRawLongBits;
 import static java.lang.Double.longBitsToDouble;
 
-class FixedOffHeapByteBufferMemory implements MutableMemory {
+public class FixedOffHeapByteBufferMemory implements MutableMemory {
 
     private long capacity;
     private long addressOffset;
 
-    FixedOffHeapByteBufferMemory(long address, long capacity) {
+    public FixedOffHeapByteBufferMemory(long address, long capacity) {
         this.addressOffset = address;
         this.capacity = capacity;
     }
@@ -122,7 +122,16 @@ class FixedOffHeapByteBufferMemory implements MutableMemory {
 
     @Override
     public void put(long index, MutableMemory src, long offset, long length) {
-        throw new UnsupportedOperationException();
+        checkCapacity(index + length);
+
+        long i = 0;
+        for (; i < length; i += 8) {
+            putLong(index + i, src.getLong(offset + i));
+        }
+
+        for (; i < offset + length; i++) {
+            put(index + i, src.get(offset + i));
+        }
     }
 
     @Override
