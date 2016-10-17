@@ -14,7 +14,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.codewise.test.utils.MethodCallUtils.methodForCall;
 
-public abstract class MutableMemoryTestBase<M extends AbstractMutableMemory> {
+public abstract class MutableMemoryTestBase<M extends MutableMemory> {
 
     public static final String PUT_METHODS = "putMethods";
     public static final String GET_METHODS = "getMethods";

@@ -5,6 +5,10 @@ public interface MemoryIterator {
 
     void iterateOverMemory(MemoryConsumer consumer, long offset, long length);
 
+    default void iterateOverMemory(MemoryConsumer consumer, long offset, long length, byte[] tempArray) {
+        iterateOverMemory(consumer, offset, length);
+    }
+
     default void iterateOverMemory(MemoryConsumer consumer, int offset, int length) {
         iterateOverMemory(consumer, (long) offset, (long) length);
     }
