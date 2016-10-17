@@ -1,6 +1,6 @@
 package com.codewise.util.memory;
 
-interface OffHeapMutableMemory extends MutableMemory {
+public interface OffHeapMutableMemory extends MutableMemory {
 
     int TEMP_BUFFER_MAX_SIZE = Integer.getInteger("com.codewise.offHeapBufferTempArraySize", 4096);
 
