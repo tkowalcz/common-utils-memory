@@ -2,6 +2,7 @@ package com.codewise.util.buffer;
 
 import com.codewise.util.lowlevel.MemoryAccess;
 import com.codewise.util.memory.BytesWrappingCapableMemory;
+import com.codewise.util.memory.FixedOffHeapByteBufferMemory;
 import com.codewise.util.memory.MemoryType;
 import com.codewise.util.memory.MutableMemory;
 
@@ -55,6 +56,10 @@ public class Buffers {
 
     public static MutableByteBuffer allocatePaged(int pageCntGrow, int pageSizeBits, int initialCapacity) {
         return allocatePaged(DEFAULT_MEMORY_TYPE, pageCntGrow, pageSizeBits, initialCapacity);
+    }
+
+    public static MutableByteBuffer wrap(long address, long capacity) {
+        return new MutableByteBufferImpl(new FixedOffHeapByteBufferMemory(address, capacity));
     }
 
     public static MutableByteBuffer wrap(MutableMemory memory) {
