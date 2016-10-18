@@ -61,6 +61,7 @@ public abstract class MutableMemoryTestBase<M extends MutableMemory> {
                 {methodForCall((MutableMemory m) -> m.putShort(0L, (short) 0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getShort(0), Short.BYTES},
                 {methodForCall((MutableMemory m) -> m.putInt(0L, 0)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getInt(0), Integer.BYTES},
                 {methodForCall((MutableMemory m) -> m.putLong(0L, 0l)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getLong(0), Long.BYTES},
+                {methodForCall((MutableMemory m) -> m.putFloat(0L, 0l)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getFloat(0), Float.BYTES},
                 {methodForCall((MutableMemory m) -> m.putDouble(0L, 0.0d)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getDouble(0), Double.BYTES},
         };
     }
@@ -73,6 +74,7 @@ public abstract class MutableMemoryTestBase<M extends MutableMemory> {
                 {methodForCall((MutableMemory m) -> m.getShort(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getShort(0), Short.BYTES},
                 {methodForCall((MutableMemory m) -> m.getInt(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getInt(0), Integer.BYTES},
                 {methodForCall((MutableMemory m) -> m.getLong(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getLong(0), Long.BYTES},
+                {methodForCall((MutableMemory m) -> m.getFloat(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getFloat(0), Float.BYTES},
                 {methodForCall((MutableMemory m) -> m.getDouble(0L)), TEST_BYTES_AS_BUFFER.order(getBufferByteOrder()).getDouble(0), Double.BYTES},
         };
     }

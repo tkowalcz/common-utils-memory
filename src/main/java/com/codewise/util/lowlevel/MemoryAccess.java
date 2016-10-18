@@ -338,6 +338,26 @@ public final class MemoryAccess {
     }
 
     //---------------------
+    //-- float
+    public static void setNativeByteOrderFloatUnsafe(Object memory, long offset, float value) {
+        UNSAFE.putFloat(memory, offset, value);
+    }
+
+    public static float getNativeByteOrderFloatUnsafe(Object memory, long offset) {
+        return UNSAFE.getFloat(memory, offset);
+    }
+
+    //---------------------
+    //-- double
+    public static void setNativeByteOrderDoubleUnsafe(Object memory, long offset, double value) {
+        UNSAFE.putDouble(memory, offset, value);
+    }
+
+    public static double getNativeByteOrderDoubleUnsafe(Object memory, long offset) {
+        return UNSAFE.getDouble(memory, offset);
+    }
+
+    //---------------------
     //-- Object
 
     public static Object getObjectUnsafe(Object memory, long offset) {

@@ -18,6 +18,10 @@ public interface ReadOnlyMemory extends MemoryIterator {
 
     double getDouble(long index);
 
+    default float getFloat(long index) {
+        return Float.intBitsToFloat(getInt(index));
+    }
+
     void get(long index, byte[] dst, int offset, int length);
 
     void get(long index, ByteBuffer buf);

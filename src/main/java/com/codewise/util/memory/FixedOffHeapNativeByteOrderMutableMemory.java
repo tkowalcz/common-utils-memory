@@ -8,8 +8,6 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import static com.codewise.util.lowlevel.MemoryAccess.ARRAY_BYTE_BASE_OFFSET;
-import static java.lang.Double.doubleToRawLongBits;
-import static java.lang.Double.longBitsToDouble;
 
 public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableMemory {
 
@@ -87,7 +85,14 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
 
     @Override
     public double getDouble(long index) {
-        return longBitsToDouble(getLong(index));
+        checkCapacity(index + Double.BYTES);
+        return MemoryAccess.getNativeByteOrderDoubleUnsafe(null, addressOffset + index);
+    }
+
+    @Override
+    public float getFloat(long index) {
+        checkCapacity(index + Float.BYTES);
+        return MemoryAccess.getNativeByteOrderFloatUnsafe(null, addressOffset + index);
     }
 
     @Override
@@ -146,7 +151,14 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
 
     @Override
     public void putDouble(long index, double value) {
-        putLong(index, doubleToRawLongBits(value));
+        ensureCapacity(index + Double.BYTES);
+        MemoryAccess.setNativeByteOrderDoubleUnsafe(null, addressOffset + index, value);
+    }
+
+    @Override
+    public void putFloat(long index, float value) {
+        ensureCapacity(index + Float.BYTES);
+        MemoryAccess.setNativeByteOrderFloatUnsafe(null, addressOffset + index, value);
     }
 
     @Override

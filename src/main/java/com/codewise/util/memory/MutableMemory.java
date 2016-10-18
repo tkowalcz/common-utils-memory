@@ -12,6 +12,10 @@ public interface MutableMemory extends ReadOnlyMemory {
 
     void putLong(long index, long value);
 
+    default void putFloat(long index, float value) {
+        putInt(index, Float.floatToIntBits(value));
+    }
+
     void putDouble(long index, double value);
 
     void put(long index, byte[] src, int offset, int length);
