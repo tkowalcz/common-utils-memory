@@ -21,6 +21,7 @@ public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
         this.capacity = capacity;
     }
 
+    @Override
     public void wrap(long address, long capacity) {
         this.addressOffset = address;
         this.capacity = capacity;

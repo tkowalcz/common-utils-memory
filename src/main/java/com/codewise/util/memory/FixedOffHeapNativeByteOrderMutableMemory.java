@@ -19,6 +19,7 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
         this.capacity = capacity;
     }
 
+    @Override
     public void wrap(long addressOffset, long capacity) {
         this.addressOffset = addressOffset;
         this.capacity = capacity;
