@@ -1,6 +1,5 @@
 package com.codewise.util.memory;
 
-import com.codewise.util.lowlevel.MemoryAccess;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.Test;
 import pl.codewise.test.utils.MethodCall;
@@ -24,7 +23,7 @@ public abstract class FixedMutableMemoryTestBase<M extends AbstractMutableMemory
 
     protected abstract M wrapByteArray(byte[] memoryBuffer);
 
-    @Test(enabled = MemoryAccess.RANGE_CHECKS, dataProvider = GET_METHODS)
+    @Test(dataProvider = GET_METHODS)
     public void shouldUnderflowWhenGetNeedsBytesBeyondCapacity(MethodCall<MutableMemory> getMethod, Object value, int typeSize) {
         // given
 
@@ -35,7 +34,7 @@ public abstract class FixedMutableMemoryTestBase<M extends AbstractMutableMemory
         Assertions.assertThat((Throwable) caughtException()).hasCauseInstanceOf(BufferUnderflowException.class);
     }
 
-    @Test(enabled = MemoryAccess.RANGE_CHECKS, dataProvider = PUT_METHODS)
+    @Test(dataProvider = PUT_METHODS)
     public void shouldOverflowWhenPutTouchesBytesBeyondCapacity(MethodCall<MutableMemory> putMethod, Object value, int typeSize) {
         // given
 
@@ -46,7 +45,7 @@ public abstract class FixedMutableMemoryTestBase<M extends AbstractMutableMemory
         Assertions.assertThat((Throwable) caughtException()).hasCauseInstanceOf(BufferOverflowException.class);
     }
 
-    @Test(expectedExceptions = BufferUnderflowException.class, enabled = MemoryAccess.RANGE_CHECKS)
+    @Test(expectedExceptions = BufferUnderflowException.class)
     public void shouldUnderflowWhenGetByteArrayFromOutsideOfBuffer() {
         // given
         byte[] buf = new byte[(int) memory.capacity() + 1];
@@ -68,7 +67,7 @@ public abstract class FixedMutableMemoryTestBase<M extends AbstractMutableMemory
         Assertions.assertThat(buf).startsWith(TEST_BYTES).endsWith((byte) 0);
     }
 
-    @Test(expectedExceptions = BufferOverflowException.class, enabled = MemoryAccess.RANGE_CHECKS)
+    @Test(expectedExceptions = BufferOverflowException.class)
     public void shouldOverflowWhenPutByteArray() {
         // given
         byte[] buf = new byte[(int) memory.capacity() + 1];

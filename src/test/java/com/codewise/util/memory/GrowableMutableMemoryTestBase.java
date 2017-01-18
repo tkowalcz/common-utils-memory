@@ -1,6 +1,5 @@
 package com.codewise.util.memory;
 
-import com.codewise.util.lowlevel.MemoryAccess;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.Test;
 import pl.codewise.test.utils.MethodCall;
@@ -15,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class GrowableMutableMemoryTestBase<M extends AbstractMutableMemory> extends MutableMemoryTestBase<M> {
 
-    @Test(enabled = MemoryAccess.RANGE_CHECKS, dataProvider = GET_METHODS)
+    @Test(dataProvider = GET_METHODS)
     public void shouldUnderflowWhenGetNeedsBytesBeyondCapacity(MethodCall<MutableMemory> getMethod, Object value, int typeSize) {
         // given
 
@@ -41,7 +40,7 @@ public abstract class GrowableMutableMemoryTestBase<M extends AbstractMutableMem
                 .endsWith(zeros(GrowableUnsafeMutableMemory.CAPACITY_INCREMENT_GRANULARITY - typeSize));
     }
 
-    @Test(expectedExceptions = BufferUnderflowException.class, enabled = MemoryAccess.RANGE_CHECKS)
+    @Test(expectedExceptions = BufferUnderflowException.class)
     public void shouldUnderflowWhenGetByteArrayFromOutsideOfBuffer() {
         // given
         byte[] buf = new byte[(int) memory.capacity() + 1];

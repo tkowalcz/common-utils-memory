@@ -1,6 +1,5 @@
 package com.codewise.util.memory;
 
-import com.codewise.util.lowlevel.MemoryAccess;
 import com.googlecode.catchexception.CatchException;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.DataProvider;
@@ -10,7 +9,6 @@ import pl.codewise.test.utils.MethodCallException;
 
 import java.nio.BufferUnderflowException;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.googlecode.catchexception.CatchException.catchException;
@@ -140,7 +138,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
         }
     }
 
-    @Test(enabled = MemoryAccess.RANGE_CHECKS, dataProvider = GET_METHODS)
+    @Test(dataProvider = GET_METHODS)
     public void shouldUnderflowWhenGetNeedsBytesBeyondCapacity(MethodCall<MutableMemory> getMethod, Object value, int typeSize) {
         // given
 
@@ -166,7 +164,7 @@ public abstract class PagedMutableMemoryTestBase<M extends AbstractPagedMutableM
                 .endsWith(zeros(PAGE_SIZE - typeSize));
     }
 
-    @Test(expectedExceptions = BufferUnderflowException.class, enabled = MemoryAccess.RANGE_CHECKS)
+    @Test(expectedExceptions = BufferUnderflowException.class)
     public void shouldUnderflowWhenGetByteArrayFromOutsideOfBuffer() {
         // given
         byte[] buf = new byte[(int) memory.capacity() + 1];

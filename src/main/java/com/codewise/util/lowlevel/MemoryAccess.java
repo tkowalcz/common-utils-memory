@@ -7,7 +7,7 @@ import java.nio.ByteOrder;
 
 public final class MemoryAccess {
 
-    public static final boolean RANGE_CHECKS = true;
+    public static final boolean RANGE_CHECKS = !Boolean.getBoolean("com.codewise.disableRangeChecks");
     public static final boolean UNSAFE_MEMORY_ACCESS = true;
 
     public static final boolean LITTLE_ENDIAN_NATIVE_BYTE_ORDER = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN;
