@@ -2,7 +2,6 @@ package com.codewise.util.memory;
 
 import com.codewise.util.lowlevel.Bits;
 import com.codewise.util.lowlevel.MemoryAccess;
-import com.google.common.base.Preconditions;
 import sun.misc.Unsafe;
 
 import static com.codewise.util.lowlevel.MemoryAccess.*;

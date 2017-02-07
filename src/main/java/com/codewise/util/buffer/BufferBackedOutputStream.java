@@ -1,6 +1,6 @@
 package com.codewise.util.buffer;
 
-import com.google.common.base.Preconditions;
+import com.codewise.util.memory.Preconditions;
 
 import java.io.IOException;
 import java.io.OutputStream;

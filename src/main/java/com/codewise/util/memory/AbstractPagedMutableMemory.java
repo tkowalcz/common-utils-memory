@@ -1,7 +1,6 @@
 package com.codewise.util.memory;
 
 import com.codewise.util.lowlevel.MemoryAccess;
-import com.google.common.base.Preconditions;
 
 public abstract class AbstractPagedMutableMemory extends AbstractMutableMemory {
 
