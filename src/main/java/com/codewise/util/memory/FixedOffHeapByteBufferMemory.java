@@ -1,11 +1,10 @@
 package com.codewise.util.memory;
 
+import sun.nio.ch.DirectBuffer;
+
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-
-import com.codewise.util.lowlevel.MemoryAccess;
-import sun.nio.ch.DirectBuffer;
 
 import static com.codewise.util.lowlevel.MemoryAccess.*;
 import static java.lang.Double.doubleToRawLongBits;
@@ -16,14 +15,14 @@ public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
     private long capacity;
     private long addressOffset;
 
-    public FixedOffHeapByteBufferMemory(long address, long capacity) {
-        this.addressOffset = address;
+    public FixedOffHeapByteBufferMemory(long addressOffset, long capacity) {
+        this.addressOffset = addressOffset;
         this.capacity = capacity;
     }
 
     @Override
-    public void wrap(long address, long capacity) {
-        this.addressOffset = address;
+    public void wrap(long addressOffset, long capacity) {
+        this.addressOffset = addressOffset;
         this.capacity = capacity;
     }
 
@@ -94,11 +93,13 @@ public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
 
     @Override
     public double getDouble(long index) {
+        checkCapacity(index + Double.BYTES);
         return longBitsToDouble(getLong(index));
     }
 
     @Override
     public void putDouble(long index, double value) {
+        ensureCapacity(index + Double.BYTES);
         putLong(index, doubleToRawLongBits(value));
     }
 
@@ -107,7 +108,7 @@ public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
         if (length > 0) {
             checkCapacity(index + 1);
             length = Math.toIntExact(Math.min(capacity - index, length));
-            MemoryAccess.copyMemoryUnsafe(null, addressOffset + index, dst, ARRAY_BYTE_BASE_OFFSET + offset, length);
+            copyMemoryUnsafe(null, addressOffset + index, dst, ARRAY_BYTE_BASE_OFFSET + offset, length);
         } else if (length < 0) {
             throw new IllegalArgumentException();
         }
@@ -117,30 +118,27 @@ public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
     public void get(long index, ByteBuffer buf) {
         checkCapacity(index + buf.remaining());
         if (buf.isDirect()) {
-            MemoryAccess.copyMemoryUnsafe(null, addressOffset + index, ((DirectBuffer)buf).address(), buf.position(), buf.remaining());
+            copyMemoryUnsafe(null, addressOffset + index, ((DirectBuffer) buf).address(), buf.position(), buf.remaining());
         } else {
-            MemoryAccess.copyMemoryUnsafe(null, addressOffset + index, buf.array(), ARRAY_BYTE_BASE_OFFSET + buf.position(), buf.remaining());
+            copyMemoryUnsafe(null, addressOffset + index, buf.array(), ARRAY_BYTE_BASE_OFFSET + buf.position(), buf.remaining());
         }
     }
 
     @Override
     public void put(long index, byte[] src, int offset, int length) {
-        if (length > 0) {
-            ensureCapacity(index + length);
-            copyMemoryUnsafe(null, addressOffset + index, src, ARRAY_BYTE_BASE_OFFSET + offset, length);
-        } else if (length < 0) {
-            throw new IllegalArgumentException();
-        }
+        ensureCapacity(index + length);
+        copyMemoryUnsafe(src, ARRAY_BYTE_BASE_OFFSET + offset, null, addressOffset + index, length);
     }
 
     @Override
     public void put(long index, MutableMemory src, long offset, long length) {
         ensureCapacity(index + length);
         if (src instanceof OffHeapMutableMemory) {
-            MemoryAccess.copyMemoryUnsafe(((OffHeapMutableMemory) src).addressOffset() + offset, addressOffset + index, length);
+            copyMemoryUnsafe(((OffHeapMutableMemory) src).addressOffset() + offset, addressOffset + index, length);
         } else {
             src.iterateOverMemory(new MemoryConsumer() {
                 long localIndex = index;
+
                 @Override
                 public void accept(byte[] memory, int offset, int length) {
                     put(localIndex, memory, offset, length);
@@ -189,13 +187,13 @@ public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
     }
 
     private void checkCapacity(long size) {
-        if (MemoryAccess.RANGE_CHECKS && size > capacity) {
+        if (RANGE_CHECKS && size > capacity) {
             throw new BufferUnderflowException();
         }
     }
 
     protected void ensureCapacity(long size) {
-        if (MemoryAccess.RANGE_CHECKS && size > capacity) {
+        if (RANGE_CHECKS && size > capacity) {
             throw new BufferOverflowException();
         }
     }

@@ -1,18 +1,17 @@
 package com.codewise.util.memory;
 
-import com.codewise.util.lowlevel.MemoryAccess;
 import sun.nio.ch.DirectBuffer;
 
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
-import static com.codewise.util.lowlevel.MemoryAccess.ARRAY_BYTE_BASE_OFFSET;
+import static com.codewise.util.lowlevel.MemoryAccess.*;
 
 public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableMemory {
 
-    private long addressOffset;
     private long capacity;
+    private long addressOffset;
 
     protected FixedOffHeapNativeByteOrderMutableMemory(long addressOffset, long capacity) {
         this.addressOffset = addressOffset;
@@ -33,67 +32,85 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
     @Override
     public byte get(long index) {
         checkCapacity(index + Byte.BYTES);
-        return MemoryAccess.getByteUnsafe(null, addressOffset + index);
+        return getByteUnsafe(null, addressOffset + index);
     }
 
     @Override
     public void put(long index, byte b) {
         ensureCapacity(index + Byte.BYTES);
-        MemoryAccess.setByteUnsafe(null, addressOffset + index, b);
+        setByteUnsafe(null, addressOffset + index, b);
     }
 
     @Override
     public char getChar(long index) {
         checkCapacity(index + Character.BYTES);
-        return MemoryAccess.getNativeByteOrderCharUnsafe(null, addressOffset + index);
+        return getNativeByteOrderCharUnsafe(null, addressOffset + index);
     }
 
     @Override
     public void putChar(long index, char value) {
         ensureCapacity(index + Character.BYTES);
-        MemoryAccess.setNativeByteOrderCharUnsafe(null, addressOffset + index, value);
+        setNativeByteOrderCharUnsafe(null, addressOffset + index, value);
     }
 
     @Override
     public short getShort(long index) {
         checkCapacity(index + Short.BYTES);
-        return MemoryAccess.getNativeByteOrderShortUnsafe(null, addressOffset + index);
+        return getNativeByteOrderShortUnsafe(null, addressOffset + index);
     }
 
     @Override
     public void putShort(long index, short value) {
         ensureCapacity(index + Short.BYTES);
-        MemoryAccess.setNativeByteOrderShortUnsafe(null, addressOffset + index, value);
+        setNativeByteOrderShortUnsafe(null, addressOffset + index, value);
     }
 
     @Override
     public int getInt(long index) {
         checkCapacity(index + Integer.BYTES);
-        return MemoryAccess.getNativeByteOrderIntUnsafe(null, addressOffset + index);
+        return getNativeByteOrderIntUnsafe(null, addressOffset + index);
     }
 
     @Override
     public void putInt(long index, int value) {
         ensureCapacity(index + Integer.BYTES);
-        MemoryAccess.setNativeByteOrderIntUnsafe(null, addressOffset + index, value);
+        setNativeByteOrderIntUnsafe(null, addressOffset + index, value);
     }
 
     @Override
     public long getLong(long index) {
         checkCapacity(index + Long.BYTES);
-        return MemoryAccess.getNativeByteOrderLongUnsafe(null, addressOffset + index);
+        return getNativeByteOrderLongUnsafe(null, addressOffset + index);
+    }
+
+    @Override
+    public void putLong(long index, long value) {
+        ensureCapacity(index + Long.BYTES);
+        setNativeByteOrderLongUnsafe(null, addressOffset + index, value);
     }
 
     @Override
     public double getDouble(long index) {
         checkCapacity(index + Double.BYTES);
-        return MemoryAccess.getNativeByteOrderDoubleUnsafe(null, addressOffset + index);
+        return getNativeByteOrderDoubleUnsafe(null, addressOffset + index);
+    }
+
+    @Override
+    public void putDouble(long index, double value) {
+        ensureCapacity(index + Double.BYTES);
+        setNativeByteOrderDoubleUnsafe(null, addressOffset + index, value);
     }
 
     @Override
     public float getFloat(long index) {
         checkCapacity(index + Float.BYTES);
-        return MemoryAccess.getNativeByteOrderFloatUnsafe(null, addressOffset + index);
+        return getNativeByteOrderFloatUnsafe(null, addressOffset + index);
+    }
+
+    @Override
+    public void putFloat(long index, float value) {
+        ensureCapacity(index + Float.BYTES);
+        setNativeByteOrderFloatUnsafe(null, addressOffset + index, value);
     }
 
     @Override
@@ -101,7 +118,7 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
         if (length > 0) {
             checkCapacity(index + 1);
             length = Math.toIntExact(Math.min(capacity - index, length));
-            MemoryAccess.copyMemoryUnsafe(null, addressOffset + index, dst, ARRAY_BYTE_BASE_OFFSET + offset, length);
+            copyMemoryUnsafe(null, addressOffset + index, dst, ARRAY_BYTE_BASE_OFFSET + offset, length);
         } else if (length < 0) {
             throw new IllegalArgumentException();
         }
@@ -111,9 +128,33 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
     public void get(long index, ByteBuffer buf) {
         checkCapacity(index + buf.remaining());
         if (buf.isDirect()) {
-            MemoryAccess.copyMemoryUnsafe(null, addressOffset + index, ((DirectBuffer)buf).address(), buf.position(), buf.remaining());
+            copyMemoryUnsafe(null, addressOffset + index, ((DirectBuffer) buf).address(), buf.position(), buf.remaining());
         } else {
-            MemoryAccess.copyMemoryUnsafe(null, addressOffset + index, buf.array(), ARRAY_BYTE_BASE_OFFSET + buf.position(), buf.remaining());
+            copyMemoryUnsafe(null, addressOffset + index, buf.array(), ARRAY_BYTE_BASE_OFFSET + buf.position(), buf.remaining());
+        }
+    }
+
+    @Override
+    public void put(long index, byte[] src, int offset, int length) {
+        ensureCapacity(index + length);
+        copyMemoryUnsafe(src, ARRAY_BYTE_BASE_OFFSET + offset, null, addressOffset + index, length);
+    }
+
+    @Override
+    public void put(long index, MutableMemory src, long offset, long length) {
+        ensureCapacity(index + length);
+        if (src instanceof OffHeapMutableMemory) {
+            copyMemoryUnsafe(((OffHeapMutableMemory) src).addressOffset() + offset, addressOffset + index, length);
+        } else {
+            src.iterateOverMemory(new MemoryConsumer() {
+                long localIndex = index;
+
+                @Override
+                public void accept(byte[] memory, int offset, int length) {
+                    put(localIndex, memory, offset, length);
+                    localIndex += length;
+                }
+            }, offset, length);
         }
     }
 
@@ -145,47 +186,6 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
     }
 
     @Override
-    public void putLong(long index, long value) {
-        ensureCapacity(index + Long.BYTES);
-        MemoryAccess.setNativeByteOrderLongUnsafe(null, addressOffset + index, value);
-    }
-
-    @Override
-    public void putDouble(long index, double value) {
-        ensureCapacity(index + Double.BYTES);
-        MemoryAccess.setNativeByteOrderDoubleUnsafe(null, addressOffset + index, value);
-    }
-
-    @Override
-    public void putFloat(long index, float value) {
-        ensureCapacity(index + Float.BYTES);
-        MemoryAccess.setNativeByteOrderFloatUnsafe(null, addressOffset + index, value);
-    }
-
-    @Override
-    public void put(long index, byte[] src, int offset, int length) {
-        ensureCapacity(index + length);
-        MemoryAccess.copyMemoryUnsafe(src, ARRAY_BYTE_BASE_OFFSET + offset, null, addressOffset + index, length);
-    }
-
-    @Override
-    public void put(long index, MutableMemory src, long offset, long length) {
-        ensureCapacity(index + length);
-        if (src instanceof OffHeapMutableMemory) {
-            MemoryAccess.copyMemoryUnsafe(((OffHeapMutableMemory) src).addressOffset() + offset, addressOffset + index, length);
-        } else {
-            src.iterateOverMemory(new MemoryConsumer() {
-                long localIndex = index;
-                @Override
-                public void accept(byte[] memory, int offset, int length) {
-                    put(localIndex, memory, offset, length);
-                    localIndex += length;
-                }
-            }, offset, length);
-        }
-    }
-
-    @Override
     public void iterateOverMemory(MemoryConsumer consumer, long offset, long length, byte[] tempArray) {
         while (length > 0) {
             int toCopy = Math.min((int) Math.min(length, Integer.MAX_VALUE), tempArray.length);
@@ -196,14 +196,14 @@ public class FixedOffHeapNativeByteOrderMutableMemory implements OffHeapMutableM
         }
     }
 
-    protected void checkCapacity(long size) {
-        if (MemoryAccess.RANGE_CHECKS && size > capacity) {
+    private void checkCapacity(long size) {
+        if (RANGE_CHECKS && size > capacity) {
             throw new BufferUnderflowException();
         }
     }
 
     protected void ensureCapacity(long size) {
-        if (MemoryAccess.RANGE_CHECKS && size > capacity) {
+        if (RANGE_CHECKS && size > capacity) {
             throw new BufferOverflowException();
         }
     }
