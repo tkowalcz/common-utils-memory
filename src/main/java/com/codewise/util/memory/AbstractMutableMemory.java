@@ -182,7 +182,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer, long offset, long length) {
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long offset, long length) {
         if (length < 0) {
             throw new IllegalArgumentException();
         }
@@ -193,7 +193,7 @@ public abstract class AbstractMutableMemory implements MutableMemory {
             byte[] page = getMemoryPageAsByteArray(offset);
             int dataInPage = Math.toIntExact(Math.min(length, (long) (pageLength - pageOffset)));
             if (dataInPage > 0) {
-                consumer.accept(page, pageOffset, dataInPage);
+                consumerMethod.accept(consumerInstance, page, pageOffset, dataInPage);
                 offset += dataInPage;
                 length -= dataInPage;
             } else {

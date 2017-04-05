@@ -2,6 +2,7 @@ package com.codewise.util.buffer;
 
 import com.codewise.util.memory.MemoryConsumer;
 import com.codewise.util.memory.ReadOnlyMemory;
+import com.codewise.util.memory.StaticMemoryConsumer;
 
 import java.nio.ByteBuffer;
 
@@ -68,8 +69,26 @@ public interface ReadOnlyByteBuffer<B extends ReadOnlyByteBuffer<B>> extends Byt
      * Does not change buffer position.
      *
      * @param consumer buffer memory chunks consumer
+     * @deprecated Use {@link #iterateOverMemory(Object, StaticMemoryConsumer, long, long)} version.
      */
-    void iterateOverMemory(MemoryConsumer consumer);
+    @Deprecated
+    default void iterateOverMemory(MemoryConsumer consumer) {
+        iterateOverMemory(consumer, MemoryConsumer::accept);
+    }
+
+    /**
+     * Iterate over buffer backing memory from current buffer position to it's current limit.
+     * Does not change buffer position.
+     *
+     * @apiNote
+     * As with {@link com.codewise.util.memory.MemoryIterator#iterateOverMemory(Object, StaticMemoryConsumer, long, long)},
+     * it's more optimal version, as it avoids unnecessary creation of anonymous objects capturing
+     * implicit lambda param (consumer instance).
+     *
+     * @param consumerInstance instance of buffer memory chunks consumer
+     * @param consumerMethod method of buffer memory chunks consumer
+     */
+    <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod);
 
     /**
      * Iterate over buffer backing memory from given index, spanning given length of bytes.
@@ -78,7 +97,12 @@ public interface ReadOnlyByteBuffer<B extends ReadOnlyByteBuffer<B>> extends Byt
      * @param index    index of first byte of interest
      * @param length   number of bytes of interest
      */
-    void iterateOverMemory(MemoryConsumer consumer, long index, long length);
+    @Deprecated
+    default void iterateOverMemory(MemoryConsumer consumer, long index, long length) {
+        iterateOverMemory(consumer, MemoryConsumer::accept, index, length);
+    }
+
+    <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long index, long length);
 
     ReadOnlyByteBuffer<?> wrap(ReadOnlyMemory memory);
 

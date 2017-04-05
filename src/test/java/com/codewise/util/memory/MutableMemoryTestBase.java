@@ -7,9 +7,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pl.codewise.test.utils.MethodCall;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.codewise.test.utils.MethodCallUtils.methodForCall;
@@ -156,6 +158,52 @@ public abstract class MutableMemoryTestBase<M extends MutableMemory> {
         assertThat(actual.array()).containsExactly(expected);
     }
 
+
+    protected M allocateBufferForMemoryIterationTest() {
+        return allocateBuffer(2000);
+    }
+
+    @Test
+    public void shouldIterateOverMemoryUsingMemoryConsumer() {
+        // given
+        M memory = allocateBufferForMemoryIterationTest();
+        int capacity = (int) memory.capacity();
+
+        byte[] testBytes = new byte[capacity];
+        for (int idx = 0; idx < capacity; idx++) {
+            testBytes[idx] = (byte) (idx % 256);
+        }
+        memory.put(0, testBytes, 0, capacity);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // when
+        memory.iterateOverMemory(baos::write, 10, capacity - 20);
+
+        // then
+        assertThat(baos.toByteArray()).containsExactly(Arrays.copyOfRange(testBytes, 10, capacity - 10));
+    }
+
+    @Test
+    public void shouldIterateOverMemoryUsingStaticMemoryConsumer() {
+        // given
+        M memory = allocateBufferForMemoryIterationTest();
+        int capacity = (int) memory.capacity();
+
+        byte[] testBytes = new byte[capacity];
+        for (int idx = 0; idx < capacity; idx++) {
+            testBytes[idx] = (byte) (idx % 256);
+        }
+        memory.put(0, testBytes, 0, capacity);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // when
+        memory.iterateOverMemory(baos, ByteArrayOutputStream::write, 10, capacity - 20);
+
+        // then
+        assertThat(baos.toByteArray()).containsExactly(Arrays.copyOfRange(testBytes, 10, capacity - 10));
+    }
 
     protected AbstractByteArrayAssert<?> assertThatMemory(M memory) {
         int capacity = Math.toIntExact(memory.capacity());

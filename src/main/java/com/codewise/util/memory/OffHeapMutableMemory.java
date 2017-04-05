@@ -10,6 +10,13 @@ public interface OffHeapMutableMemory extends MutableMemory {
 
     void wrap(long address, long capacity);
 
+    @Override
+    default <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long offset, long length) {
+        byte[] tempArray = THREAD_LOCAL_TEMP_BUFFER ? threadLocalTempBuffer.get() : new byte[Math.min((int) Math.min(length, Integer.MAX_VALUE), TEMP_BUFFER_MAX_SIZE)];
+        iterateOverMemory(consumerInstance, consumerMethod, offset, length, tempArray);
+    }
+
+    @Override
     default void iterateOverMemory(MemoryConsumer consumer, long offset, long length) {
         byte[] tempArray = THREAD_LOCAL_TEMP_BUFFER ? threadLocalTempBuffer.get() : new byte[Math.min((int) Math.min(length, Integer.MAX_VALUE), TEMP_BUFFER_MAX_SIZE)];
         iterateOverMemory(consumer, offset, length, tempArray);

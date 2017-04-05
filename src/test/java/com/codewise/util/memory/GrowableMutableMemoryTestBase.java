@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import pl.codewise.test.utils.MethodCall;
 import pl.codewise.test.utils.MethodCallException;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.BufferUnderflowException;
 import java.util.Arrays;
 

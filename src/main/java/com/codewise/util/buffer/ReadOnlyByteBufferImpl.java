@@ -1,8 +1,8 @@
 package com.codewise.util.buffer;
 
-import com.codewise.util.memory.MemoryConsumer;
 import com.codewise.util.memory.MutableMemory;
 import com.codewise.util.memory.ReadOnlyMemory;
+import com.codewise.util.memory.StaticMemoryConsumer;
 
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
@@ -147,18 +147,18 @@ class ReadOnlyByteBufferImpl<B extends ReadOnlyByteBuffer<B>> extends AbstractBy
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer, long index, long length) {
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long index, long length) {
         if (index + length > capacity()) {
             throw new IllegalArgumentException();
         }
 
-        memory.iterateOverMemory(consumer, getOffset(index), length);
+        memory.iterateOverMemory(consumerInstance, consumerMethod, getOffset(index), length);
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer) {
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod) {
         long position = position();
-        iterateOverMemory(consumer, position, remaining());
+        iterateOverMemory(consumerInstance, consumerMethod, position, remaining());
     }
 
     @Override
@@ -273,7 +273,12 @@ class ReadOnlyMemoryAdapter implements MutableMemory {
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer, long offset, long length) {
-        delegate.iterateOverMemory(consumer, offset, length);
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long offset, long length) {
+        delegate.iterateOverMemory(consumerInstance, consumerMethod, offset, length);
+    }
+
+    @Override
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long offset, long length, byte[] tempArray) {
+        delegate.iterateOverMemory(consumerInstance, consumerMethod, offset, length, tempArray);
     }
 }
