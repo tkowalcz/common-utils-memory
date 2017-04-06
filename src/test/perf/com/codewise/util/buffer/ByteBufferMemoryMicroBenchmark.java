@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+@BenchmarkMode(Mode.Throughput)
 public class ByteBufferMemoryMicroBenchmark {
 
     public static final int MEMORY_SIZE = 1024;
@@ -105,7 +106,6 @@ public class ByteBufferMemoryMicroBenchmark {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void genericMemoryBenchmark(GenericMemoryBenchmarkState state, Blackhole blackhole) {
         BiConsumer<Integer, Byte> putByte = state.putByte;
@@ -186,7 +186,6 @@ public class ByteBufferMemoryMicroBenchmark {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
 //    @CompilerControl(CompilerControl.Mode.PRINT)
     public void byteBufferMemoryBenchmark(ByteBufferMemoryBenchmarkState state, Blackhole blackhole) {
@@ -217,6 +216,7 @@ public class ByteBufferMemoryMicroBenchmark {
         }
     }
 
+/*
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(".*" + ByteBufferMemoryMicroBenchmark.class.getSimpleName() + ".*Benchmark")
@@ -228,4 +228,5 @@ public class ByteBufferMemoryMicroBenchmark {
 
         new Runner(opt).run();
     }
+*/
 }
