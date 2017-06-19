@@ -10,11 +10,11 @@ public class Buffers {
 
     private static final MemoryType DEFAULT_MEMORY_TYPE = MemoryAccess.UNSAFE_MEMORY_ACCESS ? MemoryType.UNSAFE : MemoryType.SAFE;
 
-    public static MutableByteBuffer allocate(MemoryType memoryType, int size) {
+    public static MutableByteBuffer allocate(MemoryType memoryType, long size) {
         return new MutableByteBufferImpl(memoryType.allocateFixedMemory(size));
     }
 
-    public static MutableByteBuffer allocateGrowable(MemoryType memoryType, int size) {
+    public static MutableByteBuffer allocateGrowable(MemoryType memoryType, long size) {
         return new MutableByteBufferImpl(memoryType.allocateGrowableMemory(size));
     }
 
@@ -22,7 +22,7 @@ public class Buffers {
         return new MutableByteBufferImpl(memoryType.allocatePagedMemory());
     }
 
-    public static MutableByteBuffer allocatePaged(MemoryType memoryType, int size) {
+    public static MutableByteBuffer allocatePaged(MemoryType memoryType, long size) {
         return new MutableByteBufferImpl(memoryType.allocatePagedMemory(size));
     }
 
@@ -30,15 +30,15 @@ public class Buffers {
         return new MutableByteBufferImpl(memoryType.allocatePagedMemory(pageCntGrow, pageSizeBits, 0));
     }
 
-    public static MutableByteBuffer allocatePaged(MemoryType memoryType, int pageCntGrow, int pageSizeBits, int initialCapacity) {
+    public static MutableByteBuffer allocatePaged(MemoryType memoryType, int pageCntGrow, int pageSizeBits, long initialCapacity) {
         return new MutableByteBufferImpl(memoryType.allocatePagedMemory(pageCntGrow, pageSizeBits, initialCapacity));
     }
 
-    public static MutableByteBuffer allocate(int size) {
+    public static MutableByteBuffer allocate(long size) {
         return allocate(DEFAULT_MEMORY_TYPE, size);
     }
 
-    public static MutableByteBuffer allocateGrowable(int size) {
+    public static MutableByteBuffer allocateGrowable(long size) {
         return allocateGrowable(DEFAULT_MEMORY_TYPE, size);
     }
 
@@ -46,7 +46,7 @@ public class Buffers {
         return allocatePaged(DEFAULT_MEMORY_TYPE);
     }
 
-    public static MutableByteBuffer allocatePaged(int size) {
+    public static MutableByteBuffer allocatePaged(long size) {
         return allocatePaged(DEFAULT_MEMORY_TYPE, size);
     }
 
@@ -54,7 +54,7 @@ public class Buffers {
         return allocatePaged(DEFAULT_MEMORY_TYPE, pageCntGrow, pageSizeBits);
     }
 
-    public static MutableByteBuffer allocatePaged(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+    public static MutableByteBuffer allocatePaged(int pageCntGrow, int pageSizeBits, long initialCapacity) {
         return allocatePaged(DEFAULT_MEMORY_TYPE, pageCntGrow, pageSizeBits, initialCapacity);
     }
 

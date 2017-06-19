@@ -17,7 +17,7 @@ public abstract class AbstractPagedMutableMemory extends AbstractMutableMemory {
     protected int pageCount;
     protected int pageCapacity;
 
-    protected AbstractPagedMutableMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+    protected AbstractPagedMutableMemory(int pageCntGrow, int pageSizeBits, long initialCapacity) {
         Preconditions.checkArgument(isPositiveAndPowerOf2(pageCntGrow));
 
         pageCntGrowMask = pageCntGrow - 1;
@@ -44,7 +44,7 @@ public abstract class AbstractPagedMutableMemory extends AbstractMutableMemory {
         this(64, 10, 0);
     }
 
-    protected AbstractPagedMutableMemory(int size) {
+    protected AbstractPagedMutableMemory(long size) {
         this(64, 10, size);
     }
 

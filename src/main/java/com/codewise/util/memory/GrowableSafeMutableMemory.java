@@ -2,7 +2,7 @@ package com.codewise.util.memory;
 
 public class GrowableSafeMutableMemory extends FixedSafeMutableMemory {
 
-    protected GrowableSafeMutableMemory(int size) {
+    protected GrowableSafeMutableMemory(long size) {
         super(size);
     }
 

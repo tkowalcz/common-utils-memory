@@ -4,7 +4,7 @@ public class GrowableUnsafeNativeByteOrderMutableMemory extends FixedUnsafeNativ
 
     public static final int CAPACITY_INCREMENT_GRANULARITY = 0x100;
 
-    public GrowableUnsafeNativeByteOrderMutableMemory(int size) {
+    public GrowableUnsafeNativeByteOrderMutableMemory(long size) {
         super(size);
     }
 

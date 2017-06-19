@@ -8,8 +8,8 @@ public class FixedUnsafeMutableMemory extends AbstractMutableMemory implements B
 
     protected byte[] memory;
 
-    protected FixedUnsafeMutableMemory(int size) {
-        memory = new byte[size];
+    protected FixedUnsafeMutableMemory(long size) {
+        memory = new byte[Math.toIntExact(size)];
         capacity = size;
     }
 
