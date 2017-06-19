@@ -17,7 +17,7 @@ public class PagedUnsafeMutableMemory extends AbstractPagedMutableMemory {
     private final long pageIndexMask;
     private final int pageIndexScaleBits;
 
-    protected PagedUnsafeMutableMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+    protected PagedUnsafeMutableMemory(int pageCntGrow, int pageSizeBits, long initialCapacity) {
         super(pageCntGrow, pageSizeBits, initialCapacity);
         pageIndexMask = ~pageAddrMask;
         pageIndexScaleBits = pageSizeBits - ARRAY_OBJECT_INDEX_SCALE_BITS;
@@ -29,7 +29,7 @@ public class PagedUnsafeMutableMemory extends AbstractPagedMutableMemory {
         pageIndexScaleBits = pageSizeBits - ARRAY_OBJECT_INDEX_SCALE_BITS;
     }
 
-    protected PagedUnsafeMutableMemory(int size) {
+    protected PagedUnsafeMutableMemory(long size) {
         super(size);
         pageIndexMask = ~pageAddrMask;
         pageIndexScaleBits = pageSizeBits - ARRAY_OBJECT_INDEX_SCALE_BITS;

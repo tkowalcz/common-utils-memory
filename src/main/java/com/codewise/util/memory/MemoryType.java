@@ -6,12 +6,12 @@ import java.util.function.Function;
 public enum MemoryType {
     SAFE {
         @Override
-        public MutableMemory allocateFixedMemory(int size) {
+        public MutableMemory allocateFixedMemory(long size) {
             return new FixedSafeMutableMemory(size);
         }
 
         @Override
-        public MutableMemory allocateGrowableMemory(int size) {
+        public MutableMemory allocateGrowableMemory(long size) {
             return new GrowableSafeMutableMemory(size);
         }
 
@@ -21,12 +21,12 @@ public enum MemoryType {
         }
 
         @Override
-        public MutableMemory allocatePagedMemory(int size) {
+        public MutableMemory allocatePagedMemory(long size) {
             return new PagedSafeMutableMemory(size);
         }
 
         @Override
-        public MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+        public MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, long initialCapacity) {
             return new PagedSafeMutableMemory(pageCntGrow, pageSizeBits, initialCapacity);
         }
 
@@ -37,12 +37,12 @@ public enum MemoryType {
     },
     UNSAFE {
         @Override
-        public MutableMemory allocateFixedMemory(int size) {
+        public MutableMemory allocateFixedMemory(long size) {
             return new FixedUnsafeMutableMemory(size);
         }
 
         @Override
-        public MutableMemory allocateGrowableMemory(int size) {
+        public MutableMemory allocateGrowableMemory(long size) {
             return new GrowableUnsafeMutableMemory(size);
         }
 
@@ -52,12 +52,12 @@ public enum MemoryType {
         }
 
         @Override
-        public MutableMemory allocatePagedMemory(int size) {
+        public MutableMemory allocatePagedMemory(long size) {
             return new PagedUnsafeMutableMemory(size);
         }
 
         @Override
-        public MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+        public MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, long initialCapacity) {
             return new PagedUnsafeMutableMemory(pageCntGrow, pageSizeBits, initialCapacity);
         }
 
@@ -68,12 +68,12 @@ public enum MemoryType {
     },
     UNSAFE_NATIVE_BYTE_ORDER {
         @Override
-        public MutableMemory allocateFixedMemory(int size) {
+        public MutableMemory allocateFixedMemory(long size) {
             return new FixedUnsafeNativeByteOrderMutableMemory(size);
         }
 
         @Override
-        public MutableMemory allocateGrowableMemory(int size) {
+        public MutableMemory allocateGrowableMemory(long size) {
             return new GrowableUnsafeNativeByteOrderMutableMemory(size);
         }
 
@@ -83,12 +83,12 @@ public enum MemoryType {
         }
 
         @Override
-        public MutableMemory allocatePagedMemory(int size) {
+        public MutableMemory allocatePagedMemory(long size) {
             return new PagedUnsafeNativeByteOrderMutableMemory(size);
         }
 
         @Override
-        public MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+        public MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, long initialCapacity) {
             return new PagedUnsafeNativeByteOrderMutableMemory(pageCntGrow, pageSizeBits, initialCapacity);
         }
 
@@ -98,21 +98,22 @@ public enum MemoryType {
         }
     };
 
-    public abstract MutableMemory allocateFixedMemory(int size);
+    public abstract MutableMemory allocateFixedMemory(long size);
 
-    public abstract MutableMemory allocateGrowableMemory(int size);
+    public abstract MutableMemory allocateGrowableMemory(long size);
 
     public abstract MutableMemory allocatePagedMemory();
 
-    public abstract MutableMemory allocatePagedMemory(int size);
+    public abstract MutableMemory allocatePagedMemory(long size);
 
-    public abstract MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, int initialCapacity);
+    public abstract MutableMemory allocatePagedMemory(int pageCntGrow, int pageSizeBits, long initialCapacity);
 
     public Optional<Function<byte[], MutableMemory>> getByteArrayWrappingFactory() {
         return Optional.empty();
     }
 
     private static class Constants {
+
         public static final Optional<Function<byte[], MutableMemory>> FNC_BYTE_ARRAY_TO_FIXED_SAFE = Optional.of(FixedSafeMutableMemory::new);
         public static final Optional<Function<byte[], MutableMemory>> FNC_BYTE_ARRAY_TO_FIXED_UNSAFE = Optional.of(FixedUnsafeMutableMemory::new);
         public static final Optional<Function<byte[], MutableMemory>> FNC_BYTE_ARRAY_TO_FIXED_UNSAFE_NATIVE_BYTE_ORDER = Optional.of(FixedUnsafeNativeByteOrderMutableMemory::new);

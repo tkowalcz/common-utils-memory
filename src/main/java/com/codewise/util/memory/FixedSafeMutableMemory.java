@@ -6,8 +6,8 @@ public class FixedSafeMutableMemory extends AbstractMutableMemory implements Byt
 
     protected byte[] memory;
 
-    protected FixedSafeMutableMemory(int size) {
-        memory = new byte[size];
+    protected FixedSafeMutableMemory(long size) {
+        memory = new byte[Math.toIntExact(size)];
         capacity = size;
     }
 

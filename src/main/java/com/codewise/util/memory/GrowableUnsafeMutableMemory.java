@@ -4,7 +4,7 @@ public class GrowableUnsafeMutableMemory extends FixedUnsafeMutableMemory {
 
     public static final int CAPACITY_INCREMENT_GRANULARITY = 0x100;
 
-    protected GrowableUnsafeMutableMemory(int size) {
+    protected GrowableUnsafeMutableMemory(long size) {
         super(size);
     }
 

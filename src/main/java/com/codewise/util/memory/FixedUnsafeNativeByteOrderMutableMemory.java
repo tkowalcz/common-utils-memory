@@ -8,8 +8,8 @@ public class FixedUnsafeNativeByteOrderMutableMemory extends AbstractMutableMemo
 
     protected byte[] memory;
 
-    protected FixedUnsafeNativeByteOrderMutableMemory(int size) {
-        memory = new byte[size];
+    protected FixedUnsafeNativeByteOrderMutableMemory(long size) {
+        memory = new byte[Math.toIntExact(size)];
         capacity = size;
     }
 

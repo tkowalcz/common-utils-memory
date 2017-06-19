@@ -6,14 +6,14 @@ import static java.lang.Math.toIntExact;
 
 public class PagedSafeMutableMemory extends AbstractPagedMutableMemory {
 
-    protected PagedSafeMutableMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+    protected PagedSafeMutableMemory(int pageCntGrow, int pageSizeBits, long initialCapacity) {
         super(pageCntGrow, pageSizeBits, initialCapacity);
     }
 
     protected PagedSafeMutableMemory() {
     }
 
-    protected PagedSafeMutableMemory(int size) {
+    protected PagedSafeMutableMemory(long size) {
         super(size);
     }
 

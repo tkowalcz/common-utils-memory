@@ -18,7 +18,7 @@ public class PagedUnsafeNativeByteOrderMutableMemory extends AbstractPagedMutabl
     private final long pageIndexMask;
     private final int pageIndexScaleBits;
 
-    protected PagedUnsafeNativeByteOrderMutableMemory(int pageCntGrow, int pageSizeBits, int initialCapacity) {
+    protected PagedUnsafeNativeByteOrderMutableMemory(int pageCntGrow, int pageSizeBits, long initialCapacity) {
         super(pageCntGrow, pageSizeBits, initialCapacity);
         pageIndexMask = ~pageAddrMask;
         pageIndexScaleBits = pageSizeBits - ARRAY_OBJECT_INDEX_SCALE_BITS;
@@ -30,7 +30,7 @@ public class PagedUnsafeNativeByteOrderMutableMemory extends AbstractPagedMutabl
         pageIndexScaleBits = pageSizeBits - ARRAY_OBJECT_INDEX_SCALE_BITS;
     }
 
-    protected PagedUnsafeNativeByteOrderMutableMemory(int size) {
+    protected PagedUnsafeNativeByteOrderMutableMemory(long size) {
         super(size);
         pageIndexMask = ~pageAddrMask;
         pageIndexScaleBits = pageSizeBits - ARRAY_OBJECT_INDEX_SCALE_BITS;
