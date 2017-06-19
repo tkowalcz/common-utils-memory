@@ -1,8 +1,8 @@
 package com.codewise.util.buffer;
 
-import com.codewise.util.memory.MemoryConsumer;
 import com.codewise.util.memory.MutableMemory;
 import com.codewise.util.memory.ReadOnlyMemory;
+import com.codewise.util.memory.StaticMemoryConsumer;
 
 import java.nio.ByteBuffer;
 
@@ -110,7 +110,12 @@ class MutableByteBufferBasedMemoryView implements MutableMemory {
     }
 
     @Override
-    public void iterateOverMemory(MemoryConsumer consumer, long offset, long length) {
-        delegate.iterateOverMemory(consumer, offset, length);
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long offset, long length) {
+        delegate.iterateOverMemory(consumerInstance, consumerMethod, offset, length);
+    }
+
+    @Override
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long offset, long length, byte[] tempArray) {
+        delegate.iterateOverMemory(consumerInstance, consumerMethod, offset, length, tempArray);
     }
 }

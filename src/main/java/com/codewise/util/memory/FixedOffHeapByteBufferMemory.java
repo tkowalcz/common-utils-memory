@@ -176,6 +176,17 @@ public class FixedOffHeapByteBufferMemory implements OffHeapMutableMemory {
     }
 
     @Override
+    public <C> void iterateOverMemory(C consumerInstance, StaticMemoryConsumer<C> consumerMethod, long offset, long length, byte[] tempArray) {
+        while (length > 0) {
+            int toCopy = Math.min((int) Math.min(length, Integer.MAX_VALUE), tempArray.length);
+            get(offset, tempArray, 0, toCopy);
+            consumerMethod.accept(consumerInstance, tempArray, 0, toCopy);
+            length -= toCopy;
+            offset += toCopy;
+        }
+    }
+
+    @Override
     public void iterateOverMemory(MemoryConsumer consumer, long offset, long length, byte[] tempArray) {
         while (length > 0) {
             int toCopy = Math.min((int) Math.min(length, Integer.MAX_VALUE), tempArray.length);
