@@ -20,7 +20,7 @@ public interface MutableMemory extends ReadOnlyMemory {
 
     void put(long index, byte[] src, int offset, int length);
 
-    void put(long index, MutableMemory src, long offset, long length);
+    void put(long index, ReadOnlyMemory src, long offset, long length);
 
     default void put(int index, byte b) {
         put((long) index, b);
@@ -50,7 +50,7 @@ public interface MutableMemory extends ReadOnlyMemory {
         put((long) index, src, offset, length);
     }
 
-    default void put(int index, MutableMemory src, int offset, int length) {
+    default void put(int index, ReadOnlyMemory src, int offset, int length) {
         put((long) index, src, (long) offset, (long) length);
     }
 }
