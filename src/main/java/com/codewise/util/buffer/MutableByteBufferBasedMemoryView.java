@@ -7,6 +7,7 @@ import com.codewise.util.memory.StaticMemoryConsumer;
 import java.nio.ByteBuffer;
 
 class MutableByteBufferBasedMemoryView implements MutableMemory {
+
     private final MutableByteBuffer delegate;
 
     public MutableByteBufferBasedMemoryView(MutableByteBuffer delegate) {
@@ -51,7 +52,7 @@ class MutableByteBufferBasedMemoryView implements MutableMemory {
     }
 
     @Override
-    public void put(long index, MutableMemory src, long offset, long length) {
+    public void put(long index, ReadOnlyMemory src, long offset, long length) {
         long position = delegate.position();
         long limit = delegate.limit();
         delegate.resetAtPosition(index);

@@ -218,7 +218,7 @@ class ReadOnlyMemoryAdapter implements MutableMemory {
     }
 
     @Override
-    public void put(long index, MutableMemory src, long offset, long length) {
+    public void put(long index, ReadOnlyMemory src, long offset, long length) {
         throw new UnsupportedOperationException("Backing memory is read-only");
     }
 
