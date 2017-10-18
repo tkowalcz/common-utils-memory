@@ -8,14 +8,12 @@ import java.nio.BufferUnderflowException;
 @SuppressWarnings("unchecked")
 abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBufferBase<B> {
 
-    static final long LIMIT_AT_CAPACITY = -1L;
-
     protected boolean initialized = false;
 
     protected MutableMemory memory;
     protected long baseOffset;
     protected long position;
-    protected long limit = LIMIT_AT_CAPACITY;
+    protected long limit;
 
     protected AbstractByteBuffer() {
     }
@@ -29,10 +27,12 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
         this.baseOffset = 0;
         this.position = 0;
         this.initialized = true;
+        this.limit = capacity();
     }
 
     protected B withBaseOffset(long baseOffset) {
         this.baseOffset = baseOffset;
+        this.limit = capacity();
         return (B) this;
     }
 
@@ -61,12 +61,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     @Override
     public long limit() {
         assert initialized : "Buffer not initialized";
-        return limit == LIMIT_AT_CAPACITY ? capacity() : limit;
-    }
-
-    @Override
-    public boolean isLimitAtCapacity() {
-        return limit == LIMIT_AT_CAPACITY;
+        return limit;
     }
 
     @Override
@@ -76,13 +71,12 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
             throw new IllegalArgumentException();
         } else {
             long capacity = capacity();
-            if (newLimit < capacity) {
+            if (newLimit <= capacity) {
                 limit = newLimit;
-            } else if (newLimit == capacity) {
-                limit = LIMIT_AT_CAPACITY;
             } else {
                 throw new IllegalArgumentException();
             }
+
             if (position > newLimit) {
                 position = newLimit;
             }
@@ -92,7 +86,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
 
     @Override
     public B resetAtPosition(long position) {
-        limit = LIMIT_AT_CAPACITY;
+        limit = capacity();
         this.position = position;
 
         return (B) this;
@@ -118,7 +112,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
         this.memory = that.memory;
         this.baseOffset = that.baseOffset + that.position;
         this.position = 0;
-        this.limit = that.limit == LIMIT_AT_CAPACITY ? LIMIT_AT_CAPACITY : that.remaining();
+        this.limit = that.remaining();
         this.initialized = true;
 
         return (B) this;
@@ -132,9 +126,7 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
         this.baseOffset += oldPosition;
         this.position = 0;
 
-        if (this.limit != LIMIT_AT_CAPACITY) {
-            this.limit = this.limit - oldPosition;
-        }
+        this.limit = this.limit - oldPosition;
 
         return (B) this;
     }
@@ -157,9 +149,10 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     public B free() {
         memory = null;
         baseOffset = 0;
-        limit = LIMIT_AT_CAPACITY;
         position = 0;
+        limit = 0;
         initialized = false;
+
         return (B) this;
     }
 
@@ -228,15 +221,11 @@ abstract class AbstractByteBuffer<B extends ByteBufferBase<B>> implements ByteBu
     void putRangeCheck(long index, long size) {
         assert initialized : "Buffer not initialized";
         assert index >= 0 && size >= 0 : "Index and size must be greater than or equal to zero";
+
         // check only if limit is not set at memory capacity
         // otherwise - memory implementation range check will be applied when doing put...
-        if (limit != LIMIT_AT_CAPACITY && index + size > limit) {
+        if (index + size > limit) {
             throw new BufferOverflowException();
         }
-//        if (!memory.canExpand() || limit != LIMIT_AT_CAPACITY) {
-//            if (index + size > limit) {
-//                throw new BufferOverflowException();
-//            }
-//        }
     }
 }

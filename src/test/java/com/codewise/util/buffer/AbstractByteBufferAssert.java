@@ -109,7 +109,7 @@ public class AbstractByteBufferAssert extends AbstractAssert<AbstractByteBufferA
 
     public AbstractByteBufferAssert limitIsAtCapacity() {
         isNotNull();
-        if (actual.limit != AbstractByteBuffer.LIMIT_AT_CAPACITY) {
+        if (actual.limit != actual.capacity()) {
             failIsNot("limit field", "LIMIT_AT_CAPACITY", actual.limit);
         }
         return myself;

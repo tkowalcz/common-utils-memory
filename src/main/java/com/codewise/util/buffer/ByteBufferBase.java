@@ -17,8 +17,6 @@ public interface ByteBufferBase<B extends ByteBufferBase> extends Comparable<Byt
 
     long limit();
 
-    boolean isLimitAtCapacity();
-
     B limit(long newLimit);
 
     default B limit(int newLimit) {
